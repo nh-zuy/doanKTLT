@@ -22,8 +22,10 @@ using namespace std;
 #define LenInit 5
 
 // Cau truc du lieu huong con ran di chuyen 
-enum Direction { W = 119, S = 115, D = 100, A = 97, enter = 13, esc = 27 }; 
+enum Direction { W = 119, S = 115, D = 100, A = 97, enter = 13, esc = 27 , P = 112}; 
 enum MODE{CLASSICAL, CHALLENGE, ADVANCED};
+enum STATE{PLAY, PAUSE, EXIT};
+
 // Cau truc du lieu toa do 1 vi tri trong console
 struct point { 
 	int x;
@@ -56,7 +58,9 @@ int  Speed;                          // Toc do con ran hien tai
 int  Score;                          // Luu diem nguoi choi
 int  HighScore;                      //Xem xet su dung sau
 int  Level;                          // level tang sau moi man
-bool  State;                         //Trang thai game: false = thua hoac dung, true = tiep tuc choi
+
+STATE State;                         //Trang thai game: false = thua hoac dung, true = tiep tuc choi
+                          
 int	 Dir;                            //Biến di chuyển hiện tại 
 int  file;                           //số lượng game đã lưu
 MODE Mode;
@@ -81,6 +85,7 @@ bool operator == (point a, point b) {// so sánh hai giá trị point
 // Vẽ hình chữ nhật từ tọa độ x,y và có chiều cao height và chiều rộng width 
 void draw_rectangle(int x, int y, int width, int height, int color);
 
+// ------------------ HAM LOAD FILE ----------------------------------
 void load_file(string* file, int& numFile) {// tải file game đã lưu
 	// Khoi tao lai SNAKE
 	if(SNAKE != NULL)
@@ -131,7 +136,10 @@ void load_file(string* file, int& numFile) {// tải file game đã lưu
 	//file_game.close();
 	//return;
 };
+// --------------------------------------------------------
 
+
+// ------------ HAM KHOI TAO CON RAN NEW GAME --------------
 void InitialSnake() {// khởi tạo con rắn cho hàm new game
 	// Cap phat bo nho cho con ran
 	SNAKE = new point[MAX_SIZE];
@@ -156,8 +164,10 @@ void InitialSnake() {// khởi tạo con rắn cho hàm new game
 		SNAKE[i].y = SNAKE[0].y;  
 	};
 };
+// -----------------------------------------------
 
-// Tao fruit moi
+
+// ----------- HAM TAO TRAI CAY MOI --------------
 void InitialGrey() 
 {
 	bool flag;
@@ -194,7 +204,9 @@ void InitialGrey()
 	cout << FRUIT;
 	textcolor(7);
 };
+// -------------------------------------------------
 
+// -------- HAM TAO TRAI CAY TO (CLASSICAL) --------
 void InitialBigGrey()
 {
 	bool flag;
@@ -232,11 +244,13 @@ void InitialBigGrey()
 	cout << "*";
 	textcolor(7);
 };
+// ----------------------------------------------------
 
+// ---- HAM TAO HANG DONG QUA LEVEL MOI (CHALLENGE) ----
 void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái hang cho con rắn
 	int n = 154;
 
-	textcolor(30);
+	textcolor(14);
 	gotoXY(CAVE[Level - 1].x, CAVE[Level - 1].y);
 	cout << (char)n;
 
@@ -279,6 +293,7 @@ void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái hang 
 	textcolor(7);
 };
 
+                // Ham kiem tra con ran dung hang
 bool collision_cave(bool up = false, bool down = false) {// kiểm tra rắn chạm hang
 	if (up != false && down == false) {
 		if (SNAKE[0].x == CAVE[Level - 1].x - 1 && SNAKE[0].y == CAVE[Level - 1].y) return true;
@@ -295,11 +310,13 @@ bool collision_cave(bool up = false, bool down = false) {// kiểm tra rắn ch�
 	}
 	return false;
 };
+// -------------------------------------------------------------------------------------------------
 
-// Cap nhat vi tri con ran va tang do dai
+
+// -------------- HAM TANG DO DAI CON RAN VA CAP NHAT TOA DO CELL -----------
 void update_snake(int size = 0) 
 {
-	if (size != 0)
+	if (size != 0 && size <= MAX_SIZE)
 	{
 		++Size;
 	};
@@ -308,8 +325,10 @@ void update_snake(int size = 0)
 		SNAKE[i] = SNAKE[i - 1];
 	};
 }
+// ------------------------------------------------------------------
 
-// draw table with coord x, y, height and width 
+
+// -------- HAM VE O CHU NHAT KICH THUOC BAT KI ---------------------
 void draw_rectangle(int x, int y, int wid, int hei, int color) 
 {
 	setTextColor(color);
@@ -354,7 +373,7 @@ void delete_point(int x, int y)
 	cout << " ";
 };
 
-// hàm xóa phần bên trong cái khung (chậm hơn hàm delete_menu nhưng cơ động hơn)
+// hàm xóa phần bên trong cái khung ben phai
 void delete_inside_table(int x, int y, int wid, int hei) 
 {
 	for (int i = x; i <= x + wid; i++) 
@@ -367,7 +386,8 @@ void delete_inside_table(int x, int y, int wid, int hei)
 	};
 };
 
-// in ra con rắn mau xanh la
+//  ---------------- CAC HAM IN CON RAN ------------------
+            // IN CON RAN CLASSICAL
 void print_snake(int length)
 {
 	textcolor(10);
@@ -376,7 +396,7 @@ void print_snake(int length)
 	textcolor(7);
 };
 
-// In ra con ran mau xanh la
+            // IN CON RAN CHALLENGE
 void print_mssv(int length) {// in ra mssv
 	for (register int i = 0; i < length; ++i) 
 	{
@@ -395,8 +415,9 @@ void print_mssv(int length) {// in ra mssv
 
 	textcolor(7);
 };
+// -----------------------------------------------------------
 
-// lưu game vào file mới
+// --------------------- HAM LUU GAME ---------------------------------
 void save_game() 
 {
 	draw_rectangle(17, 12, 54, 4, 10); // Ve bang luu file
@@ -409,6 +430,7 @@ void save_game()
 	gotoXY(18, 13);
 	cout << "         Do you want save game in new file?          ";
 
+	// Bat dau thao tac save game
 	int i = 0;
 	while (true) {
 		if (i == 0) {
@@ -432,11 +454,11 @@ void save_game()
 		{
 			if (i == 0)
 			{
-				break;
+				break; // Chon YES thi thoat ra
 			}
 			else
 			{
-				return;
+				return; // Chon NO thi thoat ham
 			};
 		};
 	};
@@ -450,26 +472,26 @@ void save_game()
 	// Bat dau sao luu du lieu
 	for (register int i = 0; i < MAX_SIZE; ++i)
 	{
-		game.snake[i].x = SNAKE[i].x;
+		game.snake[i].x = SNAKE[i].x;                // SAO LUU TOA DO CON RAN
 		game.snake[i].y = SNAKE[i].y;
 	};
-	game.fruit.x = FRUIT.x;
+	game.fruit.x = FRUIT.x;                          // SAO LUU TOA DO FRUIT
 	game.fruit.y = FRUIT.y;
 
-	game.score = Score;
-	game.size = Size;
-	game.speed = Speed;
-	game.level = Level;
-	game.mode = Mode;
-	// game.dir = Dir;
+	game.score = Score;                             // SAO LUU DIEM
+	game.size = Size;                               // KICH THUOC
+	game.speed = Speed;                             // LEVEL
+	game.level = Level;                             // TOC DO
+	game.mode = Mode;                               // CHE DO CHOI
+	// game.dir = Dir;                              // HUONG CON RAN HIEN TAI
 
 	// Ten file luu game = user.dat
-	string fileName = name + ".dat";
-	string address = "data/" + fileName;
+	string fileName = name + ".dat";                // Luu file vao dia chi
+	string address = "data/" + fileName;            //         data/file_user
 
 	// Mo file user
 	fstream file_game(address, ios::out | ios::binary);
-	file_game.write(reinterpret_cast<char*>(&game), sizeof(game));
+	file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
 	file_game.close();
 
 	// Check file da ton tai trong user.txt chua?
@@ -479,9 +501,9 @@ void save_game()
 
 	while (!file_game.eof())
 	{
-		file_game >> oldFile;
+		file_game >> oldFile; // Doc ten file da co trong user.txt
 
-		if (oldFile == fileName)
+		if (oldFile == fileName) // Neu da co ten file xuat hien
 		{
 			identical = true;
 			break;
@@ -509,6 +531,7 @@ void save_game()
 	//SNAKE = NULL;
 	cin.ignore();
 };
+// ---------------------------------------------------
 
 // hiển thị tọa độ cho dễ làm việc
 void show_coord(int x = 106, int y = 35) 

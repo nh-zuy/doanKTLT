@@ -1,12 +1,12 @@
 ﻿  main.cpp
 d:\visual studio 2015\projects\snake_root\snake_root\graphic.h(133): warning C4838: conversion from 'int' to 'SHORT' requires a narrowing conversion
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(774): warning C4553: '==': operator has no effect; did you intend '='?
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1137): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1138): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1139): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1140): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1141): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1142): warning C4309: 'initializing': truncation of constant value
-d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1143): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(947): warning C4553: '==': operator has no effect; did you intend '='?
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1406): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1407): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1408): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1409): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1410): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1411): warning C4309: 'initializing': truncation of constant value
+d:\visual studio 2015\projects\snake_root\snake_root\menu.h(1412): warning C4309: 'initializing': truncation of constant value
   SNAKE_root.vcxproj -> D:\Visual Studio 2015\Projects\SNAKE_root\Debug\SNAKE_root.exe
   SNAKE_root.vcxproj -> D:\Visual Studio 2015\Projects\SNAKE_root\Debug\SNAKE_root.pdb (Full PDB)

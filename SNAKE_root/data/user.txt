@@ -1,2 +1,4 @@
 duy.dat
 tram.dat
+dinh.dat
+.dat

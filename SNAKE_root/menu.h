@@ -17,16 +17,18 @@ using namespace std;
 #define x_rec 2              // Toa do x theo hinh chu nhat
 #define y_rec 1              // Tao do y theo hinh chu nhat
 
-// Xoa phan thong tin trong khung menu
+// ----------- XOA MENU ----------------------
 void delete_menu(int y1 = 1, int y2 = height)
 {
-	for (register int i = y1; i < y2; ++i) {
+	for (register int i = y1; i < y2; ++i) 
+	{
 		gotoXY(x_rec + 1, y_rec + i);
 		cout << "                                                                                  ";
-	}
-}
+	};
+};
+// -------------------------------------------
 
-// Ham thao tac exit game
+// ---------------- EXIT GAME ----------------
 void exit_game(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -80,6 +82,7 @@ void exit_game(int state = 0, int choose = 0)
 					}
 					else
 					{
+						State = PLAY;
 						return;
 					};
 			};
@@ -87,13 +90,71 @@ void exit_game(int state = 0, int choose = 0)
 		};
 	};
 };
+// ----------------------------------------------------------
 
-// Ham bat su kien tu ban phim
+// --------------------- PAUSE GAME -------------------------
+void pause_game()
+{
+	draw_rectangle(24, 8, 40, 10, 12);
+	int choose = 0;
+	while (true) {
+		delete_inside_table(25, 9, 38, 7);
+
+		textcolor(10);
+		gotoXY(39, 11); cout << "PAUSE GAME";
+
+		if (choose == 0)
+		{
+			setTextColor(4); gotoXY(30, 14); cout << "CONTINUE";
+			setTextColor(10); gotoXY(50, 14); cout << "BACK TO MENU";
+		}
+		else if (choose == 1)
+		{
+			setTextColor(10); gotoXY(30, 14); cout << "CONTINUE";
+			setTextColor(4); gotoXY(50, 14); cout << "BACK TO MENU";
+		};
+
+		int key = _getch();
+		if (key == D)
+		{
+			++choose; 
+			if (choose == 2) 
+				choose = 0;
+		}
+		else if (key == A)
+		{
+			if (choose == 0) 
+				choose = 2;
+			--choose;
+		}
+		else if (key == enter)
+		{
+			
+			if (choose == 0)
+			{
+				delete_inside_table(24, 8, 40, 10);
+				State = PLAY;
+				return;
+			}
+			else
+			{
+				delete_inside_table(24, 8, 40, 10);
+				delete_inside_table(87, 2, 16, 26);
+				return;
+			};
+		};
+	};
+	
+	textcolor(7);
+};
+// ----------------------------------------------------------
+
+// ------------------- HAM BAT SU KIEN ----------------------
 void take_event(int &n)
 {
 	int key = inputKey();
 
-	if (key == A || key == S || key == D || key == W || key == 27)
+	if (key == A || key == S || key == D || key == W || key == 27 || key == P)
 	{
 		if (key == A && n == D) return;
 		if (key == D && n == A) return;
@@ -102,8 +163,10 @@ void take_event(int &n)
 		n = key;
 	};
 };
+// -----------------------------------------------------------
 
-// Kiem tra va cham tuong va va cham voi than ran
+
+// -------------- KIEM TRA VA CHAM --------------------------
 bool check_collision()
 {
 	if (SNAKE[0].x == 2 || SNAKE[0].x == 85 || SNAKE[0].y == 1 || SNAKE[0].y == 29)
@@ -121,8 +184,11 @@ bool check_collision()
 
 	return false;
 };
+// --------------------------------------------------------------
 
-// 2 ham bo tro cho viec IN va XOA trai cay to
+
+// ---------------- HAM IN, XOA THOI GIAN -----------------------
+      /* Hien thi thoi gian */
 void showTime(int timer)
 {
 	if (timer < 10)
@@ -134,6 +200,7 @@ void showTime(int timer)
 	gotoXY(73, 21);
 	cout << timer;
 };
+     /* Xoa thoi gian */
 void hideTime(int timer)
 {
 	gotoXY(72, 21);
@@ -141,7 +208,7 @@ void hideTime(int timer)
 };
 // -------------------------------------------
 
-// mode CLASSICAL
+// ------------------ CLASSICAL ---------------------
 void play_classical(int mssv = 0, int n = D)
 {
 	// Xoa MENU
@@ -151,7 +218,7 @@ void play_classical(int mssv = 0, int n = D)
 
 	// In che do choi
 	textcolor(12);
-	gotoxy(90, 5);
+	gotoxy(91, 5);
 	cout << "CLASSICAL";
 	textcolor(7);
 
@@ -161,6 +228,13 @@ void play_classical(int mssv = 0, int n = D)
 	cout << " NAME:" << name;
 	gotoxy(88, 13);
 	std::cout << " --------------- ";
+	textcolor(7);
+
+	textcolor(8);
+	gotoXY(89, 20);
+	cout << "P : Pause";
+	gotoXY(89, 22);
+	cout << "Esc: Save";
 	textcolor(7);
 
 	// Khoi tao fruit TO, bo dem thoi gian
@@ -200,6 +274,7 @@ void play_classical(int mssv = 0, int n = D)
 		{
 		case A: // Sang trai
 		{
+			Dir = n;
 			update_snake();
 			--SNAKE[0].x;
 			// Cham bien trai thi di ra bien phai
@@ -211,6 +286,7 @@ void play_classical(int mssv = 0, int n = D)
 		};
 		case S: // Di xuong
 		{
+			Dir = n;
 			update_snake();
 			++SNAKE[0].y;
 			// Cham bien duoi thi ra bien tren
@@ -222,6 +298,7 @@ void play_classical(int mssv = 0, int n = D)
 		};
 		case D: // Sang phai
 		{
+			Dir = n;
 			update_snake();
 			++SNAKE[0].x;
 			// Neu cham bien phai thi ra bien trai
@@ -233,6 +310,7 @@ void play_classical(int mssv = 0, int n = D)
 		};
 		case W: // Di len
 		{
+			Dir = n;
 			update_snake();
 			--SNAKE[0].y;
 			// Neu cham bien tren thi ra bien duoi
@@ -242,6 +320,9 @@ void play_classical(int mssv = 0, int n = D)
 			};
 			break;
 		};
+		case P:
+			State = PAUSE;
+			return;
 		case 27:
 			return;				//return ve ham new_game
 		};
@@ -260,7 +341,7 @@ void play_classical(int mssv = 0, int n = D)
 		{
 			if (SNAKE[0] == SNAKE[i])
 			{
-				State = false;
+				State = EXIT;
 
 				// Xu li khi con ran chet
 				timer = 0;
@@ -309,12 +390,12 @@ void play_classical(int mssv = 0, int n = D)
 		};
 
 		// Neu an du 5 trai cay nho thi hien 1 trai cay TO
-		if (counter == 2)
+		if (counter == 5)
 		{
 			// Random vi tri trai cay to
 			InitialBigGrey();
 			available = true;
-			counter = 0; // Xoay lai bo dem ve )
+			counter = 0; // Xoay lai bo dem ve 0
 		};
 
 		// Neu trai cay to san sang
@@ -329,9 +410,12 @@ void play_classical(int mssv = 0, int n = D)
 			{
 				// Xoa thoi gian, xoa trai cay
 				hideTime(timer);
+				
+				// Xoa trai cay to
 				gotoXY(BFRUIT.x, BFRUIT.y);
 				cout << " ";
 
+				// Khoi tai lai co che
 				available = false;
 				timer = 30;
 
@@ -343,21 +427,33 @@ void play_classical(int mssv = 0, int n = D)
 		// Xu li khi con ran an dc trai cay to
 		if (SNAKE[0] == BFRUIT && available == true)
 		{
-			Score += 10; // An duoc trai cay to thi an 10 diem
+			Score += 8; // An duoc trai cay to thi dc tang 8 diem
+
 			hideTime(timer); // Xoa thoi gian
+
+			// Khoi tao lai tu dau
 			available = false; // Set up lai dieu kien trai cay to
 			timer = 30;  // Set up lai thoi gian
 			counter = 0; // Set up lai bo dem
 		};
 	};
 };
-// Ham chinh thao tac choi game trong CHALLENGE
+// ---------------------------------------------------------------------
+
+
+// ------------------------ CHALLENGE ----------------------------------
 void play_game(bool mssv = 0, int n = D)
 {
 	// Xoa menu
 	delete_menu();
 	// Xoa thong tin trong menu
 	delete_inside_table(87, 2, 16, 26);
+
+	// In che do choi
+	textcolor(12);
+	gotoxy(91, 5);
+	cout << "CHALLENGE";
+	textcolor(7);
 
 	textcolor(14);
 	gotoXY(90, 11); 
@@ -366,16 +462,15 @@ void play_game(bool mssv = 0, int n = D)
 	std::cout << " --------------- ";
 	textcolor(7);
 
+	textcolor(8);
+	gotoXY(89, 20); cout << "P: PAUSE";
+	gotoXY(89, 22); cout << "Esc: SAVE";
+	textcolor(7);
+
 	textcolor(11);
 
-	if (mssv == 0)
-	{
-		print_snake(Size);
-	}
-	else
-	{
-		print_mssv(Size);
-	};
+	// In con ran
+	print_mssv(Size);
 
 	_getch();
 
@@ -391,7 +486,7 @@ void play_game(bool mssv = 0, int n = D)
 		}
 		else
 		{
-			InitialCave(1); // Ve cac bien choi game
+			InitialCave(1); // Du diem, VE HANG DONG
 			flag = true;
 		};
 
@@ -407,9 +502,7 @@ void play_game(bool mssv = 0, int n = D)
 		while (true)
 		{
 			// Lay toa do duoi
-			point tail;
-			tail.x = SNAKE[Size - 1].x;
-			tail.y = SNAKE[Size - 1].y;
+			point tail = SNAKE[Size - 1];
 
 			// Doc su kien ban phim
 			take_event(n);
@@ -417,21 +510,30 @@ void play_game(bool mssv = 0, int n = D)
 			switch (n)
 			{
 			case A: // Sang trai
+				Dir = n;
 				update_snake();
 				SNAKE[0].x--;
 				break;
 			case S: // Di xuong
+				Dir = n;
 				update_snake();
 				SNAKE[0].y++;
 				break;
 			case D: // Sang phai
+				Dir = n;
 				update_snake();
 				SNAKE[0].x++;
 				break;
 			case W: // Di len
+				Dir = n;
 				update_snake();
 				SNAKE[0].y--;
 				break;
+			case P:
+			{
+				State = PAUSE;
+				return;
+			};
 			case 27:
 				return;				//return ve ham new_game
 			};
@@ -442,18 +544,13 @@ void play_game(bool mssv = 0, int n = D)
 			// Xoa duoi con ran
 			delete_point(tail.x, tail.y);
 
-			if (mssv == 0)
-			{
-				print_snake(Size);
-			}
-			else
-			{
-				print_mssv(Size);
-			};
+			// In con ran tai vi tri moi
+			print_mssv(Size);
 
+			// Ham kiem tra va cham
 			if (check_collision())
 			{
-				State = false;
+				State = EXIT;
 
 				// Xu li khi con ran chet
 				int timer = 0;
@@ -463,7 +560,16 @@ void play_game(bool mssv = 0, int n = D)
 					textcolor(12);
 					for (register int cell = 0; cell < Size; ++cell)
 					{
-						cout << SNAKE[cell];
+						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+						if (cell == 0)
+						{
+							cout << SNAKE[cell];
+						}
+						else
+						{
+							cout << MSSV[cell];
+						};
 					};
 
 					Sleep(300);
@@ -472,10 +578,19 @@ void play_game(bool mssv = 0, int n = D)
 					textcolor(7);
 					for (register int cell = 0; cell < Size; ++cell)
 					{
-						cout << SNAKE[cell];
+						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+						if (cell == 0)
+						{
+							cout << SNAKE[cell];
+						}
+						else
+						{
+							cout << MSSV[cell];
+						};
 					};
 
-					Sleep(300);
+					Sleep(200);
 
 					++timer;
 				};
@@ -493,7 +608,7 @@ void play_game(bool mssv = 0, int n = D)
 			// Neu dung trung cai cong thi thua
 			if (collision_cave(true) && flag)
 			{
-				State = false;
+				State = EXIT;
 
 				// Xu li khi con ran chet
 				int timer = 0;
@@ -503,7 +618,16 @@ void play_game(bool mssv = 0, int n = D)
 					textcolor(12);
 					for (register int cell = 0; cell < Size; ++cell)
 					{
-						cout << SNAKE[cell];
+						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+						if (cell == 0)
+						{
+							cout << SNAKE[cell];
+						}
+						else
+						{
+							cout << MSSV[cell];
+						};
 					};
 
 					Sleep(300);
@@ -512,10 +636,19 @@ void play_game(bool mssv = 0, int n = D)
 					textcolor(7);
 					for (register int cell = 0; cell < Size; ++cell)
 					{
-						cout << SNAKE[cell];
+						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+						if (cell == 0)
+						{
+							cout << SNAKE[cell];
+						}
+						else
+						{
+							cout << MSSV[cell];
+						};
 					};
 
-					Sleep(300);
+					Sleep(200);
 
 					++timer;
 				};
@@ -550,21 +683,30 @@ void play_game(bool mssv = 0, int n = D)
 					switch (n)
 					{
 					case A:
+						Dir = n;
 						update_snake();
 						--SNAKE[0].x;
 						break;
 					case S:
+						Dir = n;
 						update_snake();
 						++SNAKE[0].y;
 						break;
 					case D:
+						Dir = n;
 						update_snake();
 						++SNAKE[0].x;
 						break;
 					case W:
+						Dir = n;
 						update_snake();
 						--SNAKE[0].y;
 						break;
+					case P:
+					{
+						State = PAUSE;
+						return;
+					};
 					case 27: 
 					{
 						save_game();
@@ -583,7 +725,7 @@ void play_game(bool mssv = 0, int n = D)
 					Sleep(Speed);
 					if (collision_cave(0, 1))
 					{
-						State = false;
+						State = EXIT;
 
 						int timer = 0;
 						while (timer < 3)
@@ -614,14 +756,27 @@ void play_game(bool mssv = 0, int n = D)
 				};
 
 				InitialCave(); // Xoa cai cong ra
-				++Level;       // Tang level
+				
+				if (Level <= MAX_LEVEL)
+				{
+					++Level;
+				}
+				else
+				{
+					// Hien thi chien thang
+					delete_menu();
+
+				};
+
 				break;
 			};
 		};
 	};
 };
+// -----------------------------------------------------------
 
-// Khoi tao option new game
+
+// -------------------- NEW GAME ------------------------------
 void new_game(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -719,35 +874,61 @@ void new_game(int state = 0, int choose = 0)
 
 					if (pointer == 0)
 					{
-						State = true;
+						State = PLAY;
 						Mode = CLASSICAL;
 
 						while (true)
 						{
-							play_classical();
-							if (State == false)
+							play_classical(0, Dir);
+
+							if (State == PAUSE)
+							{
+								pause_game();
+								if (State != PLAY)
+								{
+									return;
+								};
+							}
+							else if (State == EXIT)
 							{
 								exit_game(1, 1);
 								return;
+							}
+							else
+							{
+								save_game();
 							};
-							save_game();
+	
 							cin.ignore();
 						};
 					}
 					else if (pointer == 1)
 					{
-						State = true;
+						State = PLAY;
 						Mode = CHALLENGE;
 
 						while (true)
 						{
-							play_game(1);
-							if (State == false)
+							play_game(1, Dir);
+
+							if (State == PAUSE)
+							{
+								pause_game();
+								if (State != PLAY)
+								{
+									return;
+								};
+							}
+							else if (State == EXIT)
 							{
 								exit_game(1, 1);
 								return;
+							}
+							else
+							{
+								save_game();
 							};
-							save_game();
+
 							cin.ignore();
 						};
 					};
@@ -756,8 +937,10 @@ void new_game(int state = 0, int choose = 0)
 		};
 	};
 };
+// --------------------------------------------------------
 
-// Load game tu file  da luu
+
+// ------------------ CONTINUE GAME -----------------------
 void continue_game(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -878,23 +1061,33 @@ void continue_game(int state = 0, int choose = 0)
 				{
 					if (pointer == i)
 					{
-						gotoXY(18, 14);
-						cout << "                                                     ";
-						gotoXY(43, 15); cout << "   ";
+						// Xoa thong tin file truoc
+						gotoXY(22, 14); cout << "                             ";
+						gotoXY(45, 13); cout << "                       ";
+						gotoXY(45, 15); cout << "                       ";
 			
+						// Doc thong tin file nguoi choi
 						address = "data/" + File[i];
 						file_game.open(address, ios::in | ios::binary);
 						file_game.read(reinterpret_cast<char*>(&game), sizeof(game));
 						file_game.close();
 
 						// Hien du lieu file hien tai
+						textcolor(9);
 						gotoXY(18, 14); cout << "<| ";
+						textcolor(9);
 						gotoXY(22, 14); cout << "Name: ";
+						textcolor(12);
 						gotoXY(29, 14); cout << File[i];
-						gotoXY(45, 14); cout << "Score: ";
-						gotoXY(54, 14); cout << game.score;
-						gotoXY(58, 14); cout << "Level: ";
-						gotoXY(66, 14); cout << game.level;
+						textcolor(9);
+						gotoXY(45, 13); cout << "Score: ";
+						textcolor(14);
+						gotoXY(53, 13); cout << game.score;
+						textcolor(9);
+						gotoXY(45, 15); cout << "Level: ";
+						textcolor(14);
+						gotoXY(53, 15); cout << game.level;
+						textcolor(9);
 						gotoXY(68, 14); cout << " |>";
 					};
 				};
@@ -919,7 +1112,7 @@ void continue_game(int state = 0, int choose = 0)
 						{
 							++pointer;
 
-							if (pointer == numFile)
+							if (pointer == numFile - 1)
 							{
 								pointer = 0;
 							};
@@ -927,50 +1120,52 @@ void continue_game(int state = 0, int choose = 0)
 						}
 						else if (key == 13)
 						{
-							flag = 0;
+							flag = 0; // Danh dau 
 
-							Size = game.size;
-							Level = game.level;
-							Score = game.score;
-							Mode = game.mode;
-							Speed = game.speed;
+							// Khoi tao game voi du lieu vua doc
+							Size = game.size;        // Khoi tao do dai snake
+							Level = game.level;      // Khoi tao level
+							Score = game.score;      // Khoi tao score
+							Mode = game.mode;        // Khoi tao che do choi
+							Speed = game.speed;      // Khoi tao toc do
 
+							// Khoi tao toa do con ran
 							for (register int i = 0; i < MAX_SIZE; ++i)
 							{
 								SNAKE[i].x = game.snake[i].x;
 								SNAKE[i].y = game.snake[i].y;
 							};
-
+							// Khoi tao trai cay
 							FRUIT.x = game.fruit.x;
 							FRUIT.y = game.fruit.y;
 
 							// Thao tac lay direction
 							int dx = SNAKE[0].x - SNAKE[1].x;
 							int dy = SNAKE[0].y - SNAKE[1].y;
-
+							// Phan tich
 							if (dx == 0)
 							{
 								if (dy > 0)
 								{
-									Dir = S;
+									Dir = S; // Di xuong
 								}
 								else
 								{
-									Dir = W;
+									Dir = W; // Di len
 								};
 							}
 							else
 							{
 								if (dx > 0)
 								{
-									Dir = D;
+									Dir = D; // Di qua phai
 								}
 								else
 								{
-									Dir = A;
+									Dir = A; // Di qua trai
 								};
 							};
-							cout << FRUIT;
+							cout << FRUIT; // In ra trai cay
 							break;
 						}
 						else
@@ -980,15 +1175,16 @@ void continue_game(int state = 0, int choose = 0)
 					};
 				};
 
-				if (flag == 0)
+				if (flag == 0) // Neu da chon file thi thoat
 				{
 					break;
 				};
 			};
 
+			// Bat dau chay game
 			while (true)
 			{
-				State = true;
+				State = PLAY;
 
 				if (Mode == CLASSICAL)
 				{
@@ -1003,19 +1199,38 @@ void continue_game(int state = 0, int choose = 0)
 					//
 				};
 
-				if (State == false)
+				if (State == PAUSE)
+				{
+					pause_game();
+
+					if (State != PLAY)
+					{
+						return;
+					};
+				}
+				else if (State == EXIT)
 				{
 					exit_game(1, 1);
 					return;
+				}
+				else
+				{
+					save_game();
 				};
-
-				save_game();
+				cin.ignore();
 			};
 		};
 	};
 };
+// -------------------------------------------------------------
 
-// Ham in ra bang diem cac nguoi choi
+// ------------------------ HAM LOAD DIEM ----------------------
+void load_score()
+{
+
+};
+
+// ------------------------ HIGH SCORE -------------------------
 void high_score(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -1035,6 +1250,31 @@ void high_score(int state = 0, int choose = 0)
 		}
 		else
 		{
+			// Bat dau doc file nguoi choi -> Trich xuat diem
+			string File[25];              // Mang file nguoi choi
+			int numFile = 0;              // So file nguoi choi co trong user.txt
+			string file_name;             // Ten file
+			fstream file_game("data/user.txt", ios::in);
+			while (!file_game.eof())
+			{
+				file_game >> file_name;
+				File[numFile++] = file_name;
+			};
+			file_game.close();
+			// Ket thuc doc file
+
+			// Bat dau trich xuat diem trong file
+			Info game;
+			int Score[25];
+			int numScore = 0;
+			for (register int i = 0; i < numFile; ++i)
+			{
+				file_game.open("data/" + File[i], ios::in);
+				file_game.read(reinterpret_cast<char*>(&game), sizeof(game));
+				Score[numScore++] = game.score;
+				file_game.close();
+			};
+
 			delete_menu();
 
 			_getch();
@@ -1045,8 +1285,10 @@ void high_score(int state = 0, int choose = 0)
 		return;
 	};
 };
+// ---------------------------------------------------
 
-// Ham gioi thieu doi ngu phat trien
+
+// ----------------- ABOUT ---------------------------
 void about_game(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -1071,7 +1313,22 @@ void about_game(int state = 0, int choose = 0)
 			delete_inside_table(87, 2, 16, 26);
 			delete_menu();
 
+			textcolor(10);
+
+			gotoXY(28, 8); cout << "DO AN CUOI KI KY THUAT LAP TRINH";
+			gotoXY(35, 9); cout << "TRO CHOI CON RAN";
+			gotoXY(28, 10); cout << "HUONG DAN: GV TRUONG TOAN THINH";
+			gotoXY(28, 12); cout << "TEAM : 3D       LOP : 19CTT3";
+			gotoXY(28, 13); cout << "Thanh vien: ";
+			gotoXY(35, 14); cout << "   Le Van DINH  ";
+			gotoXY(35, 15); cout << " Nguyen Nhat DUY";
+			gotoXY(35, 16); cout <<  "  Tram Huu DUC  ";
+			gotoXY(28, 18); cout << "Youtube: ";
+			gotoXY(28, 19); cout << "Github: ";
+
 			_getch();
+
+			delete_menu();
 		};
 	}
 	else
@@ -1081,7 +1338,9 @@ void about_game(int state = 0, int choose = 0)
 
 	textcolor(7);
 };
+// ---------------------------------------------------------
 
+// ------------- HUONG DAN CHOI GAME -----------------------
 void tutorial(int state = 0, int choose = 0) 
 {
 	if (state != 0)
@@ -1105,16 +1364,36 @@ void tutorial(int state = 0, int choose = 0)
 			delete_inside_table(87, 2, 16, 26);
 			delete_menu();
 
+			textcolor(10);
+			/*gotoXY(33, 10); cout << "  <> CONTROL:  ";
+			gotoXY(33, 12); cout << "         W     ";
+			gotoXY(33, 13); cout << "    A        D ";
+			gotoXY(33, 14); cout << "         S     ";
+			gotoXY(33, 15); cout << "               ";
+			gotoXY(33, 16); cout << "  ESC: Save game ";
+			gotoXY(33, 17); cout << "  P: Pause game ";*/
+			gotoXY(38, 7); cout << "CAC CHE DO CHOI";
+			gotoXY(10, 9); cout << "CLASSCICAL:  Che do co dien";
+			gotoXY(22, 10); cout << "- Ran co the di xuyen tuong, xuat hien o tuong ben doi dien";
+			gotoXY(22, 11); cout << "- An du 5 thuc an nho se xuat hien thuc an to co thoi gian";
+			gotoXY(10, 13); cout << "CHALLENGE: Che do thu thach";
+			gotoXY(22, 14); cout << "- Ban phai vuot qa 5 level, tang toc do chay sau moi level";
+			gotoXY(22, 15); cout << "- Chu y: cham tuong -> die";
+			gotoXY(10, 17); cout << "AVANDCED: Che do nang cao";
+			gotoXY(22, 18); cout << "- Coming soon!";
 
 			_getch();
+			delete_menu();
 		};
 	};
 }
+// ---------------------------------------------------------------
 
-// CAC HAM HO TRO THAO TAC VOI MENU
+
+// ----------------------------------- MENU -------------------------------------------------------------------
 string list_menu[] = { " NEW GAME  ", " CONTINUE  ","HIGH SCORE","   ABOUT     "," TUTORIAL  ","   EXIT      " };
 
-// Ham menu dong
+// ------------------------- LOGO ------------------------------------------------------
 void hieu_ung_chu_SNAKE(int y) 
 {
 	setTextColor(10);
@@ -1167,7 +1446,7 @@ void hieu_ung_chu_SNAKE(int y)
 	textcolor(7);
 };
 
-// Hieu ung xuat hien menu
+//  ------------------------- HIEU UNG XUAT HIEN MENU ----------------------------------------
 void hieu_ung_menu()
 {
 	textcolor(11);
@@ -1192,7 +1471,7 @@ void hieu_ung_menu()
 	textcolor(7);
 };
 
-// In ra menu
+// ------------------- IN MENU -------------------------------
 void print_menu(int choice)
 {
 	int f = 11;
@@ -1214,7 +1493,7 @@ void print_menu(int choice)
 	};
 };
 
-// Ham dieu khien menu
+// ------------------------- TOAN BO MENU ----------------------------------------
 void menu()
 {
 	int i = 0;
@@ -1284,5 +1563,5 @@ void menu()
 		delete_menu(15);
 	};
 };
-
+// ---------------------------------------------------------
 #endif // !_MENU_H

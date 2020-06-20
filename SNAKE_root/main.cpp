@@ -1,18 +1,14 @@
 ﻿#include "snake.h"
 #include "menu.h"
 
-int main() {
-	//---------------------------------------7
-	//Phần khởi đầu
+int main() 
+{
+	// ----- KHOI DONG ---------------------
 	noCursorType(); 
 	setTextColor(15);
-	//fix_console_window();
-	resizeConsole(1000, 600);
 
-	/*fstream file_game;
-	file_game.open("game_saved.txt");
-	file_game >> file;
-	file_game.close();*/
+	fix_console_window();
+	resizeConsole(1000, 600);
 
 	SNAKE = NULL;
 
@@ -28,6 +24,8 @@ int main() {
 		delete_menu();
 	};
 	//---------------------------------------
+
+
 	gotoXY(0, height + y_rec + 1);
 
 	delete[] SNAKE;
