@@ -447,7 +447,7 @@ void save_game()
 			if (i == 2) i = 0;
 		}
 		if (c == A) {
-			i--;
+			--i;
 			if (i < 0) i = 1;
 		}
 		if (c == enter)
@@ -487,15 +487,10 @@ void save_game()
 
 	// Ten file luu game = user.dat
 	string fileName = name + ".dat";                // Luu file vao dia chi
-	string address = "data/" + fileName;            //         data/file_user
-
-	// Mo file user
-	fstream file_game(address, ios::out | ios::binary);
-	file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
-	file_game.close();
+	string address = "data/" + fileName;            //         data/file_user.dat
 
 	// Check file da ton tai trong user.txt chua?
-	file_game.open("data/user.txt", ios::in);
+	fstream file_game("data/user.txt", ios::in);
 	string oldFile;
 	bool identical = false;
 
@@ -509,7 +504,6 @@ void save_game()
 			break;
 		};
 	};
-
 	file_game.close();
 	// ---------- Ket thuc check ---------
 
@@ -519,6 +513,81 @@ void save_game()
 		file_game.open("data/user.txt", ios::out | ios::app);
 		file_game << fileName << "\n";
 		file_game.close();
+
+		// Mo file user
+		file_game.open(address, ios::out | ios::binary);
+		file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+		file_game.close();
+	}
+	else // Trung file thi hoi xem luu hay khong?
+	{
+		draw_rectangle(17, 12, 54, 4, 10); // Ve bang luu file
+		gotoXY(18, 13);
+		cout << "                                                     ";
+		gotoXY(18, 14);
+		cout << "                                                     ";
+		gotoXY(18, 15);
+		cout << "                                                     ";
+		gotoXY(35, 13);
+		cout << "FILE ALREADY EXISTS !";
+
+		// Bat dau thao tac save game
+		int i = 0;
+		while (true) {
+			if (i == 0) {
+				gotoXY(28, 15); setTextColor(4); cout << "OVERRIDE";
+				gotoXY(58, 15); setTextColor(7); cout << "NEW FILE";
+			}
+			if (i == 1) {
+				gotoXY(28, 15); setTextColor(7); cout << "OVERRIDE";
+				gotoXY(58, 15); setTextColor(4); cout << "NEW FILE";
+			}
+			int c = _getch();
+			if (c == D) {
+				i++;
+				if (i == 2) i = 0;
+			}
+			if (c == A) {
+				--i;
+				if (i < 0) i = 1;
+			}
+			if (c == enter)
+			{
+				if (i == 0)
+				{
+					file_game.open(address, ios::out | ios::binary);
+					file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+					file_game.close();
+					break; // Chon YES thi thoat ra
+				}
+				else
+				{
+					delete_inside_table(17, 12, 54, 4); // Chon NO thi thoat ham
+					draw_rectangle(35, 13, 16, 4, 10);
+					textcolor(9);
+					gotoXY(36, 14); cout << "ENTER YOUR NAME";
+					gotoXY(36, 15);	cout << "---------------";
+					gotoXY(36, 15); cin >> name;
+					textcolor(7);
+					delete_inside_table(35, 13, 16, 4);
+
+					fileName = name + ".dat";
+					address = "data/" + fileName;
+
+					file_game.open("data/user.txt", ios::out | ios::app);
+					file_game << fileName << "\n";
+					file_game.close();
+
+					file_game.open(address, ios::out | ios::binary);
+					file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+					file_game.close();
+					break;
+				};
+			};
+		};
+
+		// Xóa thông tin trong bảng chọn
+		delete_inside_table(17, 12, 54, 4);
 	};
 
 	//file_game << file + 1 << " " << HighScore;
@@ -529,7 +598,6 @@ void save_game()
 	//delete[] SNAKE;
 
 	//SNAKE = NULL;
-	cin.ignore();
 };
 // ---------------------------------------------------
 
