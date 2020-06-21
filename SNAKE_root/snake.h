@@ -457,15 +457,15 @@ void save_game()
 	string address = "data/" + fileName; // Địa chỉ lưu file: data/file_user.dat
 
 	// Bắt đầu kiểm tra file đã tồn tại chưa?
-	fstream file_game("data/user.txt", ios::in);
-	string oldFile;
-	bool identical = false;
+	fstream file_game("data/user.txt", ios::in); // Mở file user.txt
+	string oldFile;                              // File đã tồn tại
+	bool identical = false;                      // Đánh dấu trùng lặp
 
 	while (!file_game.eof())
 	{
-		file_game >> oldFile; // Doc ten file da co trong user.txt
+		file_game >> oldFile;    // Duyệt tên file trong user.txt
 
-		if (oldFile == fileName) // Neu da co ten file xuat hien
+		if (oldFile == fileName) // Nếu trùng tên trong user.txt
 		{
 			identical = true;
 			break;
@@ -477,6 +477,7 @@ void save_game()
 	// Nếu không trùng file, viết thêm tên vào file user.txt
 	if (identical == false)
 	{
+		// Ghi thêm tên file mới vào uset.txt
 		file_game.open("data/user.txt", ios::out | ios::app);
 		file_game << fileName << "\n";
 		file_game.close();

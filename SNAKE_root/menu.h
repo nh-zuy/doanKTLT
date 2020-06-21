@@ -497,7 +497,7 @@ void play_game(bool mssv = 0, int n = D)
 			InitialCave(1); // Du diem, VE HANG DONG
 			flag = true;
 		};
-
+	
 		textcolor(12);
 		gotoXY(89, 14); 
 		cout << char(16) << " LEVEL: " << Level;
@@ -674,6 +674,7 @@ void play_game(bool mssv = 0, int n = D)
 					return;
 				};
 				// Tang diem
+				++Score;
 				Speed -= 25;// tang speed
 
 				for (register int j = Size - 1; j > 0; --j)
@@ -768,7 +769,9 @@ void play_game(bool mssv = 0, int n = D)
 				
 				if (Level < MAX_LEVEL)
 				{
+					++Score;
 					++Level;
+					break;
 				}
 				else
 				{
@@ -783,10 +786,10 @@ void play_game(bool mssv = 0, int n = D)
 					cout << "                                                     ";
 					gotoXY(18, 13);
 					cout << "         YOU WON THE CHALLENGE ^^        ";
+					_getch();
+					State = EXIT;
+					return;
 				};
-				_getch();
-				State = EXIT;
-				return;
 			};
 		};
 	};
@@ -1534,7 +1537,7 @@ void continue_game(int state = 0, int choose = 0)
 						gotoXY(45, 13); cout << "                       ";
 						gotoXY(45, 15); cout << "                       ";
 			
-						// Đọc thông tin file thứ i trong mảng
+						// Đọc thông tin file người dùng chọn trong mảng
 						address = "data/" + File[i];
 						file_game.open(address, ios::in | ios::binary);
 						file_game.read(reinterpret_cast<char*>(&game), sizeof(game)); // Đọc tập tin nhị phân chứa dữ liệu người chơi
