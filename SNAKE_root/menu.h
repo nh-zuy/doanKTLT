@@ -1362,6 +1362,7 @@ void new_game(int state = 0, int choose = 0)
 					Score = 0;
 					Speed = 170;
 					Level = 1;
+					Dir = D;
 
 					delete_menu();
 
