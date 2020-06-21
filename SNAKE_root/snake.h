@@ -16,23 +16,21 @@ using namespace std;
 //------------------------------------
 
 //------------------------------------
-#define MAX_SIZE 24
-#define MAX_LEVEL 5
-#define type 237
-#define LenInit 5
+#define MAX_SIZE 24             // Kích thước tối đa của con rắn
+#define MAX_LEVEL 5             // Cấp độ tối đa
+#define type 237                // Kí tự đặc biệt
+#define LenInit 5               // Độ dài ban đầu của con rắn bất kì
 
-// Cau truc du lieu huong con ran di chuyen 
 enum Direction { W = 119, S = 115, D = 100, A = 97, enter = 13, esc = 27 , P = 112}; 
-enum MODE{CLASSICAL, CHALLENGE, ADVANCED};
-enum STATE{PLAY, PAUSE, EXIT};
+enum MODE{CLASSICAL, CHALLENGE, ADVANCED};         // Chế độ chơi
+enum STATE{PLAY, PAUSE, EXIT};                     // Trạng thái trò chơi
 
-// Cau truc du lieu toa do 1 vi tri trong console
-struct point { 
+struct point {                                     // Tọa độ
 	int x;
 	int y;
 };
 
-struct Info
+struct Info                                        // Record lưu file nhị phân
 {
 	point snake[MAX_SIZE];
 	point fruit;
@@ -105,36 +103,6 @@ void load_file(string* file, int& numFile) {// tải file game đã lưu
 	};
 
 	file_game.close();
-	// Khong co file nao thi out
-	//if (file == 0) return;
-
-	//file_game >> HighScore;
-	//for (int i = 0; i < k; ++i){
-	//	file_game >> name; //cout << name << endl;
-	//	file_game >> Size; //cout << Size << endl;
-	//	Score = Size - 5;
-	//	Level = Score / 4 + 1; //cout << Level << endl;
-	//	Speed = 225 - Level * 25;
-
-	//	for (int j = 0; j < Size; j++) {
-	//		file_game >> SNAKE[j].x;
-	//		file_game >> SNAKE[j].y;
-	//		//cout <<"(" <<SNAKE[j].x << "," << SNAKE[j].y << ")" << "  ";
-	//	};
-
-	//	//cout << endl;
-	//	int x = SNAKE[0].x - SNAKE[1].x;
-	//	int y = SNAKE[0].y - SNAKE[1].y;
-
-	//	if (x == 0)
-	//		if (y > 0) Dir = S;
-	//		else Dir = W;
-	//	else
-	//		if (x > 0) Dir = D;
-	//		else Dir = A;
-	//};
-	//file_game.close();
-	//return;
 };
 // --------------------------------------------------------
 
@@ -466,30 +434,29 @@ void save_game()
 	// Xóa thông tin trong bảng chọn
 	delete_inside_table(17, 12, 54, 4);
 
-	// Record thong tin 1 game se luu
+	// ---------- TẠO FILE NHỊ PHÂN SAO LƯU DỮ LIỆU ------------------- 
 	Info game;
 
-	// Bat dau sao luu du lieu
+	// Sao lưu con rắn
 	for (register int i = 0; i < MAX_SIZE; ++i)
 	{
-		game.snake[i].x = SNAKE[i].x;                // SAO LUU TOA DO CON RAN
+		game.snake[i].x = SNAKE[i].x;         // Sao lưu tọa độ từng đốt rắn
 		game.snake[i].y = SNAKE[i].y;
 	};
-	game.fruit.x = FRUIT.x;                          // SAO LUU TOA DO FRUIT
+	game.fruit.x = FRUIT.x;                   // Sao lưu tọa độ trái cây
 	game.fruit.y = FRUIT.y;
 
-	game.score = Score;                             // SAO LUU DIEM
-	game.size = Size;                               // KICH THUOC
-	game.speed = Speed;                             // LEVEL
-	game.level = Level;                             // TOC DO
-	game.mode = Mode;                               // CHE DO CHOI
-	// game.dir = Dir;                              // HUONG CON RAN HIEN TAI
+	game.score = Score;           // Sao lưu điểm
+	game.size = Size;             // Sao lưu kích thước hiện tại
+	game.speed = Speed;           // Sao lưu màn chơi 
+	game.level = Level;           // Sao lưu tốc độ
+	game.mode = Mode;             // Sao lưu chế độ chơi
+	game.dir = Dir;               // Hướng chạy con rắn
 
-	// Ten file luu game = user.dat
-	string fileName = name + ".dat";                // Luu file vao dia chi
-	string address = "data/" + fileName;            //         data/file_user.dat
+	string fileName = name + ".dat";     // Tên tệp tin dữ liệu người chơi
+	string address = "data/" + fileName; // Địa chỉ lưu file: data/file_user.dat
 
-	// Check file da ton tai trong user.txt chua?
+	// Bắt đầu kiểm tra file đã tồn tại chưa?
 	fstream file_game("data/user.txt", ios::in);
 	string oldFile;
 	bool identical = false;
@@ -507,19 +474,19 @@ void save_game()
 	file_game.close();
 	// ---------- Ket thuc check ---------
 
-	// Xu li neu file chua co trong user.txt thi viet them vao
+	// Nếu không trùng file, viết thêm tên vào file user.txt
 	if (identical == false)
 	{
 		file_game.open("data/user.txt", ios::out | ios::app);
 		file_game << fileName << "\n";
 		file_game.close();
 
-		// Mo file user
+		// Lưu tập tin nhị phân
 		file_game.open(address, ios::out | ios::binary);
-		file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+		file_game.write(reinterpret_cast<char*>(&game), sizeof(game)); // Chép bản ghi vào tập tin
 		file_game.close();
 	}
-	else // Trung file thi hoi xem luu hay khong?
+	else // Nếu file đã tồn tại: ghi đè hoặc lưu file mới
 	{
 		draw_rectangle(17, 12, 54, 4, 10); // Ve bang luu file
 		gotoXY(18, 13);
@@ -553,16 +520,16 @@ void save_game()
 			}
 			if (c == enter)
 			{
-				if (i == 0)
+				if (i == 0)   // Chọn ghi đè
 				{
 					file_game.open(address, ios::out | ios::binary);
-					file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+					file_game.write(reinterpret_cast<char*>(&game), sizeof(game)); // Ghi đè file
 					file_game.close();
-					break; // Chon YES thi thoat ra
+					break; 
 				}
 				else
 				{
-					delete_inside_table(17, 12, 54, 4); // Chon NO thi thoat ham
+					delete_inside_table(17, 12, 54, 4);
 					draw_rectangle(35, 13, 16, 4, 10);
 					textcolor(9);
 					gotoXY(36, 14); cout << "ENTER YOUR NAME";
@@ -589,15 +556,6 @@ void save_game()
 		// Xóa thông tin trong bảng chọn
 		delete_inside_table(17, 12, 54, 4);
 	};
-
-	//file_game << file + 1 << " " << HighScore;
-	//file_game << "\n";
-	//file_game.seekg(0,ios::end);
-	//file_game << name << "\n" << Size << "  ";
-
-	//delete[] SNAKE;
-
-	//SNAKE = NULL;
 };
 // ---------------------------------------------------
 
