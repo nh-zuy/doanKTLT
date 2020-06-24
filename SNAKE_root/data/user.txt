@@ -1,8 +1,3 @@
 duy.dat
 tram.dat
 dinh.dat
-.dat
-huy.dat
-hahaha.dat
-hahah.dat
-dd.dat

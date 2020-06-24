@@ -39,7 +39,6 @@ struct Info                                        // Record lưu file nhị ph�
 	int speed;
 	int level;
 	int dir;
-	int Highscore;
 	MODE mode;
 };
 
@@ -50,32 +49,28 @@ point BFRUIT;                         // Luu vi tri trai cay to (CLASSICAL)
 point  CAVE[5] = {{10,15},{20,15},{30,15},{40,15},{50,15}};
 const char* MSSV = "D191204771912048419120495";
 
-int	 Size;                           // kích thước con rắn hiện tại
-string name;                       // tên người chơi
-int  Speed;                          // Toc do con ran hien tai
-int  Score;                          // Luu diem nguoi choi
-int  HighScore;                      //Xem xet su dung sau
-int  Level;                          // level tang sau moi man
+int	 Size;                 // kích thước con rắn hiện tại
+string name;               // tên người chơi
+int  Speed;                // Tốc độ hiện tại
+int  Score;                // Điểm hiện tại
+int  Level;                // Cấp độ hiện tại
 
-STATE State;                         //Trang thai game: false = thua hoac dung, true = tiep tuc choi
+STATE State;               // Trạng thái trò chơi
                           
-int	 Dir;                            //Biến di chuyển hiện tại 
-int  file;                           //số lượng game đã lưu
-MODE Mode;
-bool New_game;
-//int time_rec;                      // thời gian vẽ hình chữ nhật
-//int time_snake;                    // thời gian vẽ chữ Snake
-
+int	 Dir;                  //Biến di chuyển hiện tại 
+int  file;                 // Số lượng game đã lưu
+MODE Mode;                 // Chế độ chơi hiện tại
+bool New_game;             // Có phải là NEW GAME?
 //-------------------------------------------
 
-// Ham in ra 1 phan tu kieu Point
+// QUÁ TẢI XUẤT KIỂU point
 ostream& operator <<(ostream & devOut, point &p) {
 	gotoXY(p.x, p.y); 
 	devOut << (char)type;
 	return devOut;
 }
-
-bool operator == (point a, point b) {// so sánh hai giá trị point
+// QUÁ TẢI SO SÁNH 2 BIẾN point
+bool operator == (point a, point b) {
 	if (a.x == b.x && a.y == b.y)
 		return true;
 	return false;
@@ -83,18 +78,18 @@ bool operator == (point a, point b) {// so sánh hai giá trị point
 // Vẽ hình chữ nhật từ tọa độ x,y và có chiều cao height và chiều rộng width 
 void draw_rectangle(int x, int y, int width, int height, int color);
 
-// ------------------ HAM LOAD FILE ----------------------------------
+// ------------------ HÀM LOAD FILE ----------------------------------
 void load_file(string* file, int& numFile) {// tải file game đã lưu
-	// Khoi tao lai SNAKE
+	// Khởi tạo lại SNAKE
 	if(SNAKE != NULL)
 		delete[] SNAKE;
 
 	SNAKE = new point[MAX_SIZE];
 
-	// Doc toan bo ten file vao mang
+	// ĐỌC TOÀN BỘ TÊN FILE VÀO MẢNG
 	string fileName;
 	fstream file_game("data/user.txt", ios::in);
-	numFile = 0; // Bien luu giu so file trong user.txt
+	numFile = 0; // SỐ LƯỢNG FILE
 
 	while (!file_game.eof())
 	{
@@ -107,25 +102,20 @@ void load_file(string* file, int& numFile) {// tải file game đã lưu
 // --------------------------------------------------------
 
 
-// ------------ HAM KHOI TAO CON RAN NEW GAME --------------
+// ------------ HÀM KHỞI TẠO CON RẮN --------------
 void InitialSnake() {// khởi tạo con rắn cho hàm new game
-	// Cap phat bo nho cho con ran
+	// CẤP PHÁT BỘ NHỚ CON RẮN
 	SNAKE = new point[MAX_SIZE];
-	//memset(SNAKE, 0, sizeof(point) * MAX_SIZE);
 	for (register int i = MAX_SIZE - 1; i >= 0; --i)
 	{
 		SNAKE[i].x = 0;
 		SNAKE[i].y = 0;
 	};
-
 	Size = LenInit;
-
+	// Set up vị trí ban đầu của con rắn
 	srand((int)time(NULL));
-	//Size = LenInit;
-	// Set up vi tri dau
 	SNAKE[0].x = rand() % 39 + 12;  
 	SNAKE[0].y = rand() % 13 + 2;
-
 	for (register int i = 1; i < LenInit; ++i) 
 	{  
 		SNAKE[i].x = SNAKE[0].x - i;  
@@ -135,7 +125,7 @@ void InitialSnake() {// khởi tạo con rắn cho hàm new game
 // -----------------------------------------------
 
 
-// ----------- HAM TAO TRAI CAY MOI --------------
+// ----------- HÀM TẠO TRÁI CÂY MỚI --------------
 void InitialGrey() 
 {
 	bool flag;
@@ -174,7 +164,7 @@ void InitialGrey()
 };
 // -------------------------------------------------
 
-// -------- HAM TAO TRAI CAY TO (CLASSICAL) --------
+// -------- HÀM TẠO TRÁI CÂY ĐẶC BIỆT (CLASSICAL) --------
 void InitialBigGrey()
 {
 	bool flag;
@@ -214,8 +204,8 @@ void InitialBigGrey()
 };
 // ----------------------------------------------------
 
-// ---- HAM TAO HANG DONG QUA LEVEL MOI (CHALLENGE) ----
-void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái hang cho con rắn
+// ---- HÀM TẠO CỔNG CHUYỂN CẤP (CHALLENGE) ----
+void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái cổng cho con rắn
 	int n = 154;
 
 	textcolor(14);
@@ -261,27 +251,29 @@ void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái hang 
 	textcolor(7);
 };
 
-                // Ham kiem tra con ran dung hang
-bool collision_cave(bool up = false, bool down = false) {// kiểm tra rắn chạm hang
-	if (up != false && down == false) {
+// ----------------- HÀM KIỂM TRA CON RẮN CHẠM CỔNG CHUYỂN CẤP -----------------
+bool collision_cave(bool up = false, bool down = false) {
+	// NẾU LÀ CỔNG VÀO THÌ KIỂM TRA LÂN CẬN
+	if (up == true && down == false) { // CỔNG VÀO
 		if (SNAKE[0].x == CAVE[Level - 1].x - 1 && SNAKE[0].y == CAVE[Level - 1].y) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x + 1 && SNAKE[0].y == CAVE[Level - 1].y) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x - 1 && SNAKE[0].y == CAVE[Level - 1].y-1) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x + 1 && SNAKE[0].y == CAVE[Level - 1].y-1) return true;
 	};
-
-	if (up == false && down != false) {
+	// NẾU LÀ CỔNG RA THÌ KIỂM TRA LÂN CẬN
+	if (up == false && down == true) { // CỔNG RA 
 		if (SNAKE[0].x == CAVE[Level - 1].x - 1 && SNAKE[0].y == CAVE[Level - 1].y) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x + 1 && SNAKE[0].y == CAVE[Level - 1].y) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x - 1 && SNAKE[0].y == CAVE[Level - 1].y + 1) return true;
 		if (SNAKE[0].x == CAVE[Level - 1].x + 1 && SNAKE[0].y == CAVE[Level - 1].y + 1) return true;
-	}
+	};
+	// KHÔNG CÓ VA CHẠM
 	return false;
 };
 // -------------------------------------------------------------------------------------------------
 
 
-// -------------- HAM TANG DO DAI CON RAN VA CAP NHAT TOA DO CELL -----------
+// -------------- HÀM TĂNG ĐỘ DÀI CON RẮN VÀ CẬP NHẬT VỊ TRÍ CON RẮN -----------
 void update_snake(int size = 0) 
 {
 	if (size != 0 && size <= MAX_SIZE)
@@ -326,11 +318,6 @@ void draw_rectangle(int x, int y, int wid, int hei, int color)
 		gotoXY(wid ,hei - i + y); cout << (char)186;
 		Sleep(5);
 	};
-	/*gotoXY(wid + 2, y + 2); cout << "name: ";
-	gotoXY(wid + 2, y + 3); cout << "lol_game";
-	gotoXY(wid + 2, y + 5); cout << "level:";
-	gotoXY(wid + 2, y + 6); cout << 999;*/
-
 	textcolor(7);
 };
 
@@ -354,8 +341,8 @@ void delete_inside_table(int x, int y, int wid, int hei)
 	};
 };
 
-//  ---------------- CAC HAM IN CON RAN ------------------
-            // IN CON RAN CLASSICAL
+//  ---------------- CÁC HÀM IN CON RẮN ------------------
+            // IN CON RẮN CỔ ĐIỂN
 void print_snake(int length)
 {
 	textcolor(10);
@@ -364,7 +351,7 @@ void print_snake(int length)
 	textcolor(7);
 };
 
-            // IN CON RAN CHALLENGE
+            // IN CON RẮN MSSV
 void print_mssv(int length) {// in ra mssv
 	for (register int i = 0; i < length; ++i) 
 	{
@@ -385,10 +372,11 @@ void print_mssv(int length) {// in ra mssv
 };
 // -----------------------------------------------------------
 
-// --------------------- HAM LUU GAME ---------------------------------
+// --------------------- HÀM LƯU GAME ---------------------------------
 void save_game() 
 {
-	draw_rectangle(17, 12, 54, 4, 10); // Ve bang luu file
+	// ------------------- HIỆU ỨNG BẢNG CHỌN ----------------------
+	draw_rectangle(17, 12, 54, 4, 10); 
 	gotoXY(18, 13);
 	cout << "                                                     ";
 	gotoXY(18, 14);
@@ -398,7 +386,6 @@ void save_game()
 	gotoXY(18, 13);
 	cout << "         Do you want save game in new file?          ";
 
-	// Bat dau thao tac save game
 	int i = 0;
 	while (true) {
 		if (i == 0) {
@@ -422,21 +409,20 @@ void save_game()
 		{
 			if (i == 0)
 			{
-				break; // Chon YES thi thoat ra
+				break; // CHỌN YES
 			}
 			else
 			{
-				return; // Chon NO thi thoat ham
+				return; // CHỌN NO
 			};
 		};
 	};
-	
+	// Nếu đã chọn YES
 	// Xóa thông tin trong bảng chọn
 	delete_inside_table(17, 12, 54, 4);
 
 	// ---------- TẠO FILE NHỊ PHÂN SAO LƯU DỮ LIỆU ------------------- 
 	Info game;
-
 	// Sao lưu con rắn
 	for (register int i = 0; i < MAX_SIZE; ++i)
 	{
@@ -472,7 +458,7 @@ void save_game()
 		};
 	};
 	file_game.close();
-	// ---------- Ket thuc check ---------
+	// ---------- KẾT THÚC KIỂM TRA ---------
 
 	// Nếu không trùng file, viết thêm tên vào file user.txt
 	if (identical == false)
@@ -547,7 +533,7 @@ void save_game()
 					file_game.close();
 
 					file_game.open(address, ios::out | ios::binary);
-					file_game.write(reinterpret_cast<char*>(&game), sizeof(game));      // Ghi RECORD vao file
+					file_game.write(reinterpret_cast<char*>(&game), sizeof(game));
 					file_game.close();
 					break;
 				};

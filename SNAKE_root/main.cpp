@@ -6,13 +6,10 @@ int main()
 	// ----- KHOI DONG ---------------------
 	noCursorType(); 
 	setTextColor(15);
-
 	fix_console_window();
-	resizeConsole(1000, 600);
-
+	resizeConsole(WIDTH, HEIGHT);
 	SNAKE = NULL;
-
-	show_coord();
+	//show_coord();
 	//---------------------------------------
 	
 	//---------------------------------------

@@ -10,14 +10,14 @@
 #include<fstream>
 using namespace std;
 
-#define WIDTH  800           // Chieu rong man hinh console
-#define HEIGHT 600           // Chieu cao man hinh console 
-#define width	83           // Chieu rong khung menu
-#define height	28           // Chieu cao khung menu
-#define x_rec 2              // Toa do x theo hinh chu nhat
-#define y_rec 1              // Tao do y theo hinh chu nhat
+#define WIDTH  1000          // CHIỀU RỘNG CONSOLE
+#define HEIGHT 600           // CHIỀU CAO CONSOLe 
+#define width	83           // CHIỀU RÔNG KHUNG MENU
+#define height	28           // CHIỀU CAO KHUNG MENU
+#define x_rec 2              // TỌA ĐỘ X
+#define y_rec 1              // TỌA ĐỘ Y
 
-// ----------- XOA MENU ----------------------
+// ----------- XÓA MENU ----------------------
 void delete_menu(int y1 = 1, int y2 = height)
 {
 	for (register int i = y1; i < y2; ++i) 
@@ -212,6 +212,63 @@ void hideTime(int timer)
 };
 // -------------------------------------------
 
+// ----------- HIỆU ỨNG CON RẮN CHẾT ----------------
+void dead_snake(bool challenge)
+{
+	int timer = 0; // Bộ đếm thời gian
+	while (timer < 3)
+	{
+		// GIẬT LẦN 1
+		textcolor(12);
+		for (register int cell = 0; cell < Size; ++cell)
+		{
+			gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+			if (challenge == true)
+			{
+				if (cell == 0)
+				{
+					cout << SNAKE[cell];
+				}
+				else
+				{
+					cout << MSSV[cell];
+				};
+			}
+			else
+			{
+				cout << SNAKE[cell];
+			};
+		};
+		Sleep(300);
+
+		// GIẬT LẦN 2
+		textcolor(7);
+		for (register int cell = 0; cell < Size; ++cell)
+		{
+			gotoXY(SNAKE[cell].x, SNAKE[cell].y);
+
+			if (challenge == true)
+			{
+				if (cell == 0)
+				{
+					cout << SNAKE[cell];
+				}
+				else
+				{
+					cout << MSSV[cell];
+				};
+			}
+			else
+			{
+				cout << SNAKE[cell];
+			};
+		};
+		Sleep(200);
+		++timer;
+	};
+};
+// --------------------------------------------------
 // ------------------ CLASSICAL ---------------------
 void play_classical(int mssv = 0, int n = D)
 {
@@ -241,26 +298,26 @@ void play_classical(int mssv = 0, int n = D)
 	cout << "Esc: Save";
 	textcolor(7);
 
-	// Khoi tao fruit TO, bo dem thoi gian
+	// Bộ đếm thời gian, bộ đếm trái cây ăn được
 	short int timer = 30;
 	short int counter = 0;
 	bool available = false;
 
-	// Ve con ran CLASSICAL
+	// VẼ CON RẮN LẦN ĐẦU
 	print_snake(Size);
 
-	// An phim bat ki de bat dau
+	// PRESS ANY KEY TO STARTs
 	_getch();
 
-	// Khoi tao trai cay nho dau tien
+	// KHỞI TẠO TRÁI CÂY BAN ĐẦU
 	InitialGrey();
 
-	point tail;            // Toa do duoi con ran nguoi choi
+	point tail; // Tọa độ đuôi: xóa đuôi - in đầu
 
-	// Vong lap chinh cua CLASSICAL
+	// VÒNG LẶP CHÍNH TRONG GAME
 	while (true)
 	{
-		// Hien thi LEVEL, SCORE, SIZE o o ben canh
+		// --------------- THÔNG SỐ ---------------
 		textcolor(12);
 		gotoXY(89, 14);
 		cout << char(16) << " LEVEL: " << Level;
@@ -269,7 +326,7 @@ void play_classical(int mssv = 0, int n = D)
 		gotoXY(89, 18);
 		cout << char(16) << " SIZE: " << Size;
 		textcolor(11);
-
+		// ----------------------------------------
 		// Lay toa do duoi
 		tail = SNAKE[Size - 1];
 
@@ -349,32 +406,8 @@ void play_classical(int mssv = 0, int n = D)
 			{
 				State = EXIT;
 
-				// Xu li khi con ran chet
-				timer = 0;
-
-				while (timer < 3)
-				{
-					// Giat 1 lan
-					textcolor(12);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						cout << SNAKE[cell];
-					};
-
-					Sleep(300);
-
-					// Giat lan 2
-					textcolor(7);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						cout << SNAKE[cell];
-					};
-
-					Sleep(200);
-
-					++timer;
-				};
-
+				dead_snake(false);
+				
 				return;
 			};
 		};
@@ -456,7 +489,7 @@ void play_game(bool mssv = 0, int n = D)
 	// Xoa thong tin trong menu
 	delete_inside_table(87, 2, 16, 26);
 
-	// In che do choi
+	// -------- IN THÔNG SỐ -----------
 	textcolor(12);
 	gotoxy(92, 5);
 	cout << "CHALLENGE";
@@ -473,31 +506,33 @@ void play_game(bool mssv = 0, int n = D)
 	gotoXY(90, 24); cout << "P: PAUSE";
 	gotoXY(90, 26); cout << "Esc: SAVE";
 	textcolor(7);
+	// ----------------------------------
 
 	textcolor(11);
 
-	// In con ran
+	// In con rắn lần đầu
 	print_mssv(Size);
 
 	_getch();
 
-	bool flag;                    // Cai co bao hieu du dieu kien qua man
-	point tail;                   // Toa do duoi con ran
+	bool flag;     // Cờ đánh dấu qua màn
+	point tail;    // Tọa độ đuôi con rắn (xóa đuôi - in đầu)
 
 	while (true)
 	{
 		flag = false;
 
-		if (Score % 4 != 0 || Score == 0)
+		if (Score % 5 != 0 || Score == 0)
 		{
-			InitialGrey(); // Tao fruit
+			InitialGrey(); // Tạo trái cây
 		}
 		else
 		{
-			InitialCave(1); // Du diem, VE HANG DONG
+			InitialCave(1); // Ăn đủ 5 trái cây, vẽ cổng chuyển cấp
 			flag = true;
 		};
 	
+		// ---------------- IN THÔNG SỐ -------------------
 		textcolor(12);
 		gotoXY(89, 14); 
 		cout << char(16) << " LEVEL: " << Level;
@@ -506,103 +541,63 @@ void play_game(bool mssv = 0, int n = D)
 		gotoXY(89, 18);
 		cout << char(16) << " SIZE: " << Size;
 		textcolor(11);
+		// -----------------------------------------------
 
 		while (true)
 		{
-			// Lay toa do duoi
+			// Lấy tọa độ đuôi ban đầu
 			tail = SNAKE[Size - 1];
 
-			// Doc su kien ban phim
+			// ĐỌC SỰ KIỆN TỪ BÀN PHÍM
 			take_event(n);
 
 			switch (n)
 			{
-			case A: // Sang trai
+			case A: // SANG TRÁI
 				Dir = n;
 				update_snake();
 				SNAKE[0].x--;
 				break;
-			case S: // Di xuong
+			case S: // ĐI XUỐNG 
 				Dir = n;
 				update_snake();
 				SNAKE[0].y++;
 				break;
-			case D: // Sang phai
+			case D: // SANG PHẢI
 				Dir = n;
 				update_snake();
 				SNAKE[0].x++;
 				break;
-			case W: // Di len
+			case W: // ĐI LÊN
 				Dir = n;
 				update_snake();
 				SNAKE[0].y--;
 				break;
-			case P:
+			case P: // pause game
 			{
 				State = PAUSE;
 				return;
 			};
-			case 27:
-				return;				//return ve ham new_game
+			case 27:// Thoát hàm, phục vụ tác vụ khác
+				return;
 			};
 
-			// Dieu chinh toc do con ran
+			// Điều chỉnh tốc độ con rắn
 			Sleep(Speed);
 
-			// Xoa duoi con ran
+			// XÓA ĐUÔi
 			delete_point(tail.x, tail.y);
 
-			// In con ran tai vi tri moi
+			// IN ĐẦU
 			print_mssv(Size);
 
-			// Ham kiem tra va cham
+			// KIỂM TRA VA CHẠM SAU DI CHUYỂN
 			if (check_collision())
 			{
 				State = EXIT;
 
-				// Xu li khi con ran chet
-				int timer = 0;
-				while (timer < 3)
-				{
-					// Giat 1 lan
-					textcolor(12);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-						if (cell == 0)
-						{
-							cout << SNAKE[cell];
-						}
-						else
-						{
-							cout << MSSV[cell];
-						};
-					};
-
-					Sleep(300);
-
-					// Giat lan 2
-					textcolor(7);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-						if (cell == 0)
-						{
-							cout << SNAKE[cell];
-						}
-						else
-						{
-							cout << MSSV[cell];
-						};
-					};
-
-					Sleep(200);
-
-					++timer;
-				};
-
+				dead_snake(true);
+				
 				return;		//return ve ham new_game
 			};
 
@@ -613,53 +608,12 @@ void play_game(bool mssv = 0, int n = D)
 				break;
 			};
 
-			// Neu dung trung cai cong thi thua
+			// NẾU ĐỤNG TRÚNG CỔNG THÌ CHẾT 
 			if (collision_cave(true) && flag)
 			{
 				State = EXIT;
 
-				// Xu li khi con ran chet
-				int timer = 0;
-				while (timer < 3)
-				{
-					// Giat 1 lan
-					textcolor(12);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-						if (cell == 0)
-						{
-							cout << SNAKE[cell];
-						}
-						else
-						{
-							cout << MSSV[cell];
-						};
-					};
-
-					Sleep(300);
-
-					// Giat lan 2
-					textcolor(7);
-					for (register int cell = 0; cell < Size; ++cell)
-					{
-						gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-						if (cell == 0)
-						{
-							cout << SNAKE[cell];
-						}
-						else
-						{
-							cout << MSSV[cell];
-						};
-					};
-
-					Sleep(200);
-
-					++timer;
-				};
+				dead_snake(true);
 
 				return;
 			};
@@ -667,10 +621,11 @@ void play_game(bool mssv = 0, int n = D)
 			// Neu vao cong dung theo huong mac dinh thi len level
 			if (flag && SNAKE[0].x == CAVE[Level - 1].x && SNAKE[0].y == CAVE[Level - 1].y)
 			{
-				// Neu vao CAVE sai huong
+				// VÀO CỔNG THEO HƯỚNG NGƯỢC LẠI MẶC ĐỊNH 
 				if (n == W)
 				{
 					State = EXIT;
+					dead_snake(true);
 					return;
 				};
 				// Tang diem
@@ -683,8 +638,8 @@ void play_game(bool mssv = 0, int n = D)
 					Sleep(Speed);//SPEED
 				};
 
-				InitialCave();     // Xoa cong vao
-				InitialCave(0, 1); // Ve cong ra
+				InitialCave();     // XÓA CỔNG VÀO
+				InitialCave(0, 1); // VẼ CỔNG RA 
 
 				for (register int j = 0; j < Size; ++j)
 				{
@@ -733,49 +688,28 @@ void play_game(bool mssv = 0, int n = D)
 					};
 
 					Sleep(Speed);
-					if (collision_cave(0, 1))         // Neu va cham CAVE
+					if (collision_cave(false, true)) // KIỂM TRA VA CHẠM CỔNG
 					{
 						State = EXIT;                 // Thua game
 
-						int timer = 0;               
-						while (timer < 3)
-						{
-							// Giat 1 lan
-							textcolor(12);
-							for (register int cell = 0; cell < Size; ++cell)
-							{
-								cout << SNAKE[cell];
-							};
-
-							Sleep(300);
-
-							// Giat lan 2
-							textcolor(7);
-							for (register int cell = 0; cell < Size; ++cell)
-							{
-								cout << SNAKE[cell];
-							};
-
-							Sleep(300);
-
-							++timer;
-						};
+						dead_snake(true);
 
 						return;
 					};
 				};
 
-				InitialCave(); // Xoa cai cong ra
+				InitialCave(); // XÓA CỔNG RA
 				
+				// NÂNG LEVEL
 				if (Level < MAX_LEVEL)
 				{
 					++Score;
 					++Level;
 					break;
 				}
-				else
+				else  // NẾU VƯỢT QUA ĐƯỢC CẤP ĐỘ 5
 				{
-					// Hien thi chien thang
+					// HIỂN THỊ CHIẾN THẮNG
 					delete_menu();
 					draw_rectangle(17, 12, 54, 4, 10);
 					gotoXY(18, 13);
@@ -785,7 +719,7 @@ void play_game(bool mssv = 0, int n = D)
 					gotoXY(18, 15);
 					cout << "                                                     ";
 					gotoXY(18, 13);
-					cout << "         YOU WON THE CHALLENGE ^^        ";
+					cout << "             YOU WON THE CHALLENGE ^^                ";
 					_getch();
 					State = EXIT;
 					return;
@@ -797,16 +731,16 @@ void play_game(bool mssv = 0, int n = D)
 // -----------------------------------------------------------
 
 // -------------------- ADVANDCED ---------------------------
-			/* Ham quyet dinh buoc di tiep theo cho con ran may */
+			/* HÀM CHỌN BƯỚC ĐI TIẾP THEO CHO CON RẮN MÁY */
 int decideNext(point CSNAKE, int CDir, point fruit)
 {
-	int dir = CDir;
-	int dx = fruit.x - CSNAKE.x;
-	int dy = fruit.y - CSNAKE.y;
+	int dir = CDir;              // KẾT QUẢ
+	int dx = fruit.x - CSNAKE.x; // DELTA X
+	int dy = fruit.y - CSNAKE.y; // DELTA Y
 
-			/* Truong hop trai cay ngay truoc mat */
-	// Dang huong sang trai A
-	if (CDir == A && dx < 0 && dy < 0)
+			/* TRƯỜNG HỢP TRÁI CÂY Ở NGAY TRƯỚC MẶT */
+	// ĐANG HƯỚNG SANG TRÁI
+	if (CDir == A && dx < 0 && dy < 0)             
 	{
 		dir = A;
 	}
@@ -822,7 +756,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = S;
 	};
-	// Dang huong sang phai D
+	// ĐANG HƯỚNG SANG PHẢI
 	if (CDir == D && dx > 0 && dy < 0)
 	{
 		dir = D;
@@ -839,7 +773,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = S;
 	};
-	// Dang huong len tren: W
+	// ĐANG HƯỚNG LÊN TRÊN
 	if (CDir == W && dx < 0 && dy < 0)
 	{
 		dir = W;
@@ -856,7 +790,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = D;
 	};
-	// Dang huong xuong duoi
+	// ĐANG HƯỚNG XUỐNG DƯỚI
 	if (CDir == S && dx < 0 && dy > 0)
 	{
 		dir = S;
@@ -871,79 +805,79 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	}
 	else if (CDir == S && dx > 0 && dy == 0)
 	{
-		dir = A;
+		dir = D;
 	};
 
-				/* Truong hop trai cay o sau con ran may */
-	// Dang huong sang trai: A
+				/* TRƯỜNG HỢP TRÁI CÂY SAU LƯNG CON RẮN */
+	// ĐANG HƯỚNG SANG TRÁI NÊN QUAY ĐẦU
 	if (CDir == A && dx > 0 && dy < 0)
 	{
 		dir = W;
 	}
-	else if (CDir == W && dx > 0 && dy == 0)
+	/*else if (CDir == W && dx > 0 && dy == 0)
 	{
 		dir = D;
-	};
-	if (CDir == A && dx > 0 && dy > 0)
+	};*/
+	else if (CDir == A && dx > 0 && dy > 0)
 	{
 		dir = S;
-	}
-	else if (CDir == S && dx > 0 && dy == 0)
+	};
+	/*else if (CDir == S && dx > 0 && dy == 0)
 	{
 		dir = D;
-	};
-	// Dang huong sang phai: D
+	};*/
+	// ĐANG HƯỚNG SANG PHẢI NÊN QUAY ĐẦU
 	if (CDir == D && dx < 0 && dy < 0)
 	{
 		dir = W;
 	}
-	else if (CDir == W && dx < 0 && dy == 0)
+	/*else if (CDir == W && dx < 0 && dy == 0)
 	{
 		dir = A;
-	};
-	if (CDir == D && dx < 0 && dy > 0)
+	};*/
+	else if (CDir == D && dx < 0 && dy > 0)
 	{
 		dir = S;
-	}
-	else if (CDir == S && dx < 0 && dy == 0)
+	};
+	/*else if (CDir == S && dx < 0 && dy == 0)
 	{
 		dir = A;
-	};
-	// Dang huong len tren: W
+	};*/
+	// ĐANG HƯỚNG LÊN TRÊN NÊN QUAY ĐẦU
 	if (CDir == W && dx < 0 && dy > 0)
 	{
 		dir = A;
 	}
-	else if (CDir == A && dx == 0 && dy > 0)
+	/*else if (CDir == A && dx == 0 && dy > 0)
 	{
 		dir = S;
-	};
-	if (CDir == W && dx > 0 && dy > 0)
+	};*/
+	else if (CDir == W && dx > 0 && dy > 0)
 	{
 		dir = D;
-	}
-	else if (CDir == D && dx == 0 && dy > 0)
+	};
+	/*else if (CDir == D && dx == 0 && dy > 0)
 	{
 		dir = S;
-	};
-	// Dang huong xuong duoi: S
+	};*/
+	// ĐANG HƯỚNG XUỐNG DƯỚI NÊN QUAY ĐẦU
 	if (CDir == S && dx < 0 && dy < 0)
 	{
 		dir = A;
 	}
-	else if (CDir == A && dx == 0 && dy < 0)
+	/*else if (CDir == A && dx == 0 && dy < 0)
 	{
 		dir = W;
-	};
-	if (CDir == S && dx > 0 && dy < 0)
+	};*/
+	else if (CDir == S && dx > 0 && dy < 0)
 	{
 		dir = D;
-	}
-	else if (CDir == D && dx == 0 && dy < 0)
+	};
+	/*else if (CDir == D && dx == 0 && dy < 0)
 	{
 		dir = W;
-	};
-
+	};*/
+	// TRẢ VỀ KẾT QUẢ PHÂN TÍCH
 	return dir;
 };
 
@@ -954,13 +888,13 @@ void play_advanced(bool mssv = 0, int n = D)
 	int CSize = LenInit;
 	int CScore = 0;
 	int CDir = D;
-	int CLevel = 0;
-			  /* Set up con ran may */
+	int CLevel = 1;
+			  /* Set up con rắn máy */
 	for (register int i = MAX_SIZE - 1; i >= 0; --i)
 	{
 		CSNAKE[i] = { 0,0 };
 	};
-	          /* Set up vi tri ban dau */
+	          /* Set up vị trí ban đầu */
 	for (register int i = 0; i < CSize; ++i)
 	{
 		CSNAKE[i].x = 30 - i;
@@ -968,15 +902,15 @@ void play_advanced(bool mssv = 0, int n = D)
 	};
 	// -------------------------------------------
 
-	// Xoa menu
+	// Xóa MENU
 	delete_menu();
-	// Xoa thong tin trong menu
+	// Xóa thông tin trong MENU
 	delete_inside_table(87, 2, 16, 26);
 
 
-	// ----------------- IN BANG THONG TIN --------------------
+	// ----------------- IN BẢNG THÔNG TIN --------------------
 	textcolor(12);
-	gotoxy(91, 5);
+	gotoxy(92, 5);
 	cout << "ADVANCED";
 	textcolor(7);
 	textcolor(14);
@@ -992,28 +926,29 @@ void play_advanced(bool mssv = 0, int n = D)
 	textcolor(11);
 	// ---------------------------------------------------------
 
-	// ------------ IN LAN DAU CON RAN -------------------------
-	print_mssv(Size);                                 // Con ran nguoi choi
+	// ------------ IN CON RẮN LẦN ĐẦU -------------------------
+	print_mssv(Size);                                 // Con rắn người chơi
 
-	for (register int i = 0; i < CSize; ++i)          // Con ran may
+	for (register int i = 0; i < CSize; ++i)          // Con rắn máy
 	{
 		gotoXY(CSNAKE[i].x, CSNAKE[i].y);
 		cout << "+";
 	};
 	// --------------------------------------------------------
 
-	// ---------------------- IN THUC AN ----------------------
+	// ---------------------- IN THỨC ĂN ----------------------
 	InitialGrey();
 	// --------------------------------------------------------
 
-	_getch();                            // Tro choi se bat dau sau khi nhan bat ki phim nao
+	_getch(); // PRESS ANY KEY TO START
 
-	point tailUser;              // Toa do duoi con ran nguoi choi
-	point tailCom;               // Toa do duoi con ran may
-	int time = 2;
+	point tailUser;// Tọa độ đuôi con rắn người chơi
+	point tailCom; // Tọa độ đuôi con rắn máy
+	int time = 1;  // CƠ CHẾ ĐIỀU CHỈNH TỐC ĐỘ CON RẮN MÁY
+
 	while (true)
 	{
-		// ------------- THONG SO NGUOI CHOI ----------------
+		// ------------- THÔNG SỐ NGƯỜI CHƠI ----------------
 		textcolor(12);
 		gotoXY(89, 16);
 		cout << char(16) << " LEVEL: " << Level;
@@ -1024,78 +959,78 @@ void play_advanced(bool mssv = 0, int n = D)
 		textcolor(11);
 		// ---------------------------------------------------
 
-		// ------------- THONG SO CON RAN MAY ----------------
+		// ------------- THÔNG SỐ CON RẮN MÁY ----------------
 		textcolor(12);
 		gotoXY(89, 6);
-		cout << char(16) << " LEVEL: " << CLevel;
+		cout << char(16) << " LEVEL BOT: " << CLevel;
 		gotoXY(89, 8);
-		cout << char(16) << " SCORE: " << CScore;
+		cout << char(16) << " SCORE BOT: " << CScore;
 		gotoXY(89, 10);
-		cout << char(16) << " SIZE: " << CSize;
+		cout << char(16) << " SIZE BOT: " << CSize;
 		textcolor(11);
 		// ---------------------------------------------------
 
-				/* Lay toa do duoi ban dau */
+				/* Lấy tọa độ đuôi, chuẩn bị cho việc di chuyển */
 		tailUser = SNAKE[Size - 1];
 		tailCom = CSNAKE[CSize - 1];
 
-		// ------------ NGUOI CHOI -------------------------
-		take_event(n);                             // Doc su kien ban phim
+		// ------------ NGƯỜI CHƠI ĐIỀU KHIỂN -------------------------
+		take_event(n); // Đọc sự kiện bàn phím
 
-		switch (n)                                 // Phan tich phan ung nguoi choi
+		switch (n)     // Phân tích phản ứng người chơi
 		{
-		case A: // Sang trai
+		case A:		   // Nhấn A, sang trái
 		{
 			Dir = n;
 			update_snake();
 			--SNAKE[0].x;
 			break;
 		};
-		case S: // Di xuong
+		case S:        // Nhấn S đi xuống
 		{
 			Dir = n;
 			update_snake();
-			++SNAKE[0].y; // Dich chuyen xuong duoi
+			++SNAKE[0].y;
 			break;
 		};
-		case D: // Sang phai
+		case D:        // Nhấn D sang phải
 		{
 			Dir = n;
 			update_snake();
-			++SNAKE[0].x; // Dich chuyen sang phai
+			++SNAKE[0].x;
 			break;
 		};
-		case W: // Di len
+		case W:        // Nhấn W đi lên
 		{
 			Dir = n;
 			update_snake();
 			--SNAKE[0].y;
 			break;
 		};
-		case P:
+		case P:        // Nhấn P = pause game
 			State = PAUSE;
 			return;
-		case 27:
-			return;				//return ve ham new_game
+		case 27:       // Nhấn ESC
+			return;	
 		};
 		// -------------------------------------------------
 
-		// ---------------- CON RAN MAY ---------------------
-		if (time == 2)
-		{
+		// ------------- CON RẮN MÁY DI CHUYỂN ------------------
+		if (time == 1) // Sau time lần cập nhật vị trí người chơi,
+		{              // mới cập nhật vị trí con rắn máy. 
 			switch (CDir)
 			{
-			case A:                         // Con ran may chay sang trai
-			{
-				for (register int i = CSize - 1; i > 0; --i)        // Thao tac lay vi tri truoc do
+			case A:  // Hướng chạy sang trái
+			{        // Cập nhật vị trí con rắn
+				for (register int i = CSize - 1; i > 0; --i)
 				{
 					CSNAKE[i] = CSNAKE[i - 1];
 				};
-				--CSNAKE[0].x;                                      // Dich chuyen cai dau sang trai
+				--CSNAKE[0].x;                     
 				break;
 			};
-			case D:                         // Con ran may chay sang phai
-			{
+			case D:  // Hướng chạy sang phải
+			{        // Cập nhật vị trí con rắn
 				for (register int i = CSize - 1; i > 0; --i)
 				{
 					CSNAKE[i] = CSNAKE[i - 1];
@@ -1103,8 +1038,8 @@ void play_advanced(bool mssv = 0, int n = D)
 				++CSNAKE[0].x;
 				break;
 			};
-			case W:
-			{
+			case W:  // Hướng chạy lên trên
+			{        // Cập nhật vị trí con rắn
 				for (register int i = CSize - 1; i > 0; --i)
 				{
 					CSNAKE[i] = CSNAKE[i - 1];
@@ -1112,8 +1047,8 @@ void play_advanced(bool mssv = 0, int n = D)
 				--CSNAKE[0].y;
 				break;
 			};
-			case S:
-			{
+			case S:  // Hướng chạy xuống dưới
+			{        // Cập nhật vị trí con rắn
 				for (register int i = CSize - 1; i > 0; --i)
 				{
 					CSNAKE[i] = CSNAKE[i - 1];
@@ -1121,83 +1056,42 @@ void play_advanced(bool mssv = 0, int n = D)
 				++CSNAKE[0].y;
 				break;
 			};
-			}; // End switch
+			}; // Kết thúc phân tích
 			time = 0;
 		};
 		// --------------------------------------------------
 
-		Sleep(Speed);                // Toc do con ran may = Con ran nguoi choi
+		Sleep(Speed); // TỐC ĐỘ IN HÌNH LÀ NHƯ NHAU
 
-		// ------------- HIEN THI CON RAN -------------------
-		delete_point(tailUser.x, tailUser.y);               // Xoa duoi con ran nguoi choi
+		// ------------- HIỂN THỊ CON RẮN -------------------
+		delete_point(tailUser.x, tailUser.y);    // Xóa đuôi
 
-		print_mssv(Size);                                   // In con ran nguoi choi
+		print_mssv(Size);                        // In đầu   -->   // 5940291
 		++time;
 
-		delete_point(tailCom.x, tailCom.y);                 // Xoa duoi con ran may
-		for (register int i = 0; i < CSize; ++i)            // In con ran may
+		delete_point(tailCom.x, tailCom.y);      // Xóa đuôi
+		for (register int i = 0; i < CSize; ++i) // In đầu   -->  // +++++++++++ 
 		{
 			gotoXY(CSNAKE[i].x, CSNAKE[i].y);
 			cout << "+";
 		};
 		// --------------------------------------------------
 
-		// --------------- KIEM TRA VA CHAM -----------------
-		if (check_collision())                      // Kiem tra nguoi choi va cham tuong hoac than ran
+		// --------------- KIỂM TRA VA CHẠM -----------------
+		if (check_collision()) // Người chơi va chạm tường hoặc thân rắn
 		{
 			State = EXIT;
 
-			// Xu li khi con ran chet
-			int timer = 0;
-			while (timer < 3)
-			{
-				// Giat 1 lan
-				textcolor(12);
-				for (register int cell = 0; cell < Size; ++cell)
-				{
-					gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-					if (cell == 0)
-					{
-						cout << SNAKE[cell];
-					}
-					else
-					{
-						cout << MSSV[cell];
-					};
-				};
-
-				Sleep(300);
-
-				// Giat lan 2
-				textcolor(7);
-				for (register int cell = 0; cell < Size; ++cell)
-				{
-					gotoXY(SNAKE[cell].x, SNAKE[cell].y);
-
-					if (cell == 0)
-					{
-						cout << SNAKE[cell];
-					}
-					else
-					{
-						cout << MSSV[cell];
-					};
-				};
-
-				Sleep(200);
-
-				++timer;
-			};
+			dead_snake(true);
 
 			return;		//return ve ham new_game
 		};
 
-		CDir = decideNext(CSNAKE[0], CDir, FRUIT);
+		CDir = decideNext(CSNAKE[0], CDir, FRUIT); // Tính bước đi tiếp theo con rắn máy
 
-		if (CSNAKE[0].y == 2 && CDir == W)
+		if (CSNAKE[0].y == 2 && CDir == W) // Không được chạm biên trên
 		{
-			if (CSNAKE[0].x >= 0 && CSNAKE[0].x < 43)
+			if (CSNAKE[0].x >= 2 && CSNAKE[0].x < 43)
 			{
 				CDir = D;
 			}
@@ -1206,9 +1100,9 @@ void play_advanced(bool mssv = 0, int n = D)
 				CDir = A;
 			};
 		}
-		else if (CSNAKE[0].y == 28 && CDir == S)
+		else if (CSNAKE[0].y == 28 && CDir == S) // Không được chạm biên dưới
 		{
-			if (CSNAKE[0].x >= 0 && CSNAKE[0].x < 43)
+			if (CSNAKE[0].x >= 2 && CSNAKE[0].x < 43)
 			{
 				CDir = D;
 			}
@@ -1217,9 +1111,9 @@ void play_advanced(bool mssv = 0, int n = D)
 				CDir = A;
 			};
 		};
-		if (CSNAKE[0].x == 3 && CDir == A)
+		if (CSNAKE[0].x == 3 && CDir == A) // Không được chạm biên trái
 		{
-			if (CSNAKE[0].y >= 0 && CSNAKE[0].y < 14)
+			if (CSNAKE[0].y >= 3 && CSNAKE[0].y < 14)
 			{
 				CDir = S;
 			}
@@ -1228,9 +1122,9 @@ void play_advanced(bool mssv = 0, int n = D)
 				CDir = W;
 			};
 		}
-		else if (CSNAKE[0].x == 84 && CDir == D)
+		else if (CSNAKE[0].x == 84 && CDir == D) // Không được chạm biên phải
 		{
-			if (CSNAKE[0].y >= 0 && CSNAKE[0].y < 14)
+			if (CSNAKE[0].y >= 3 && CSNAKE[0].y < 14)
 			{
 				CDir = S;
 			}
@@ -1241,14 +1135,14 @@ void play_advanced(bool mssv = 0, int n = D)
 		};
 		// --------------------------------------------------
 
-		// ------------------ AN TRAI CAY -------------------
-		if (SNAKE[0] == FRUIT)
+		// ------------------ ĂN TRÁI CÂY -------------------
+		if (SNAKE[0] == FRUIT) // Ưu tiên người chơi ăn được trái cây
 		{
 			++Score;
 
-			if (Score % 4 == 0 && Level < MAX_LEVEL) // Toi da 5 level
+			if (Score % 4 == 0 && Level < MAX_LEVEL) // Tối đa 5 level
 			{
-				++Level; // Tang level
+				++Level; // Tăng cấp độ
 				if (CLevel < MAX_LEVEL)
 				{
 					Speed -= 35;
@@ -1263,9 +1157,9 @@ void play_advanced(bool mssv = 0, int n = D)
 		{
 			++CScore;
 
-			if (CScore % 4 == 0 && CLevel < MAX_LEVEL) // Toi da 5 level
+			if (CScore % 4 == 0 && CLevel < MAX_LEVEL) // Tối đa 5 level
 			{
-				++CLevel; // Tang level
+				++CLevel; // Tăng cấp độ
 				if (Level < MAX_LEVEL)
 				{
 					Speed -= 35;
@@ -1277,6 +1171,45 @@ void play_advanced(bool mssv = 0, int n = D)
 			InitialGrey();
 		};
 		// -------------------------------------------------------
+
+		// ------------- ĐIỀU KIỆN CHIẾN THẮNG -------------------
+				/* Nếu người chơi đạt level 5 trước thì thắng */
+		if (Level == MAX_LEVEL)
+		{
+			// Thông báo chiến thắng
+			delete_menu();
+			draw_rectangle(17, 12, 54, 4, 10);
+			gotoXY(18, 13);
+			cout << "                                                     ";
+			gotoXY(18, 14);
+			cout << "                                                     ";
+			gotoXY(18, 15);
+			cout << "                                                     ";
+			gotoXY(18, 14);
+			cout << "                YOU WON THE ADVANCED ^^              ";
+			_getch();
+			State = EXIT;
+			return;
+		}
+		else if (CLevel == MAX_LEVEL)
+		{
+			// Thông báo thất bại
+			delete_menu();
+			draw_rectangle(17, 12, 54, 4, 10);
+			gotoXY(18, 13);
+			cout << "                                                     ";
+			gotoXY(18, 14);
+			cout << "                                                     ";
+			gotoXY(18, 15);
+			cout << "                                                     ";
+			gotoXY(18, 14);
+			cout << "                YOU LOSE THE ADVANCED T.T            ";
+			_getch();
+			State = EXIT;
+			return;
+		};
+		// -------------------------------------------------------
+
 	};
 
 	delete[] CSNAKE;
@@ -1360,15 +1293,16 @@ void new_game(int state = 0, int choose = 0)
 
 				if (key == enter)
 				{
+					// KHỞI TẠO CON RẮN
 					InitialSnake();
-
+					// KHỞI TẠO THÔNG SỐ ĐẦU
 					Score = 0;
 					Speed = 170;
 					Level = 1;
 					Dir = D;
 
 					delete_menu();
-
+					// NHẬP TÊN NGƯỜI CHƠI
 					draw_rectangle(35, 13, 16, 4, 10);
 					textcolor(9);
 					gotoXY(36, 14); cout << "ENTER YOUR NAME";
@@ -1490,13 +1424,13 @@ void continue_game(int state = 0, int choose = 0)
 		else
 		{
 			New_game == false;
-			// Xoa menu chuan bi cho frame moi
+			// XÓA MENU 
 			delete_inside_table(87, 2, 16, 26);
 			gotoXY(88, 14); cout << "  Press A or D ";
 			gotoXY(88, 15); cout << "     to CHECK   ";
 			gotoXY(88, 16); cout << " ENTER to choose";
 
-			// Xoa menu, ve o chu nhat moi
+			// XÓA MENU, VẼ Ô CHỮ NHẬT MỚI
 			delete_menu();
 			draw_rectangle(17, 12, 54, 4, 11);
 
@@ -1519,7 +1453,7 @@ void continue_game(int state = 0, int choose = 0)
 				File[numFile++] = fileName;
 			};
 
-			file_game.close();           // Kết thúc duyệt
+			file_game.close(); // Kết thúc duyệt
 		
 			int pointer = 0;
 			Info game;
@@ -1532,18 +1466,19 @@ void continue_game(int state = 0, int choose = 0)
 				{
 					if (pointer == i)
 					{
-						// Xoa thong tin file truoc
+						// XÓA THÔNG TIN FILE TRƯỚC
 						gotoXY(22, 14); cout << "                                                 ";
 						gotoXY(45, 13); cout << "                       ";
 						gotoXY(45, 15); cout << "                       ";
 			
 						// Đọc thông tin file người dùng chọn trong mảng
 						address = "data/" + File[i];
+						// Đọc tập tin nhị phân chứa dữ liệu người chơi
 						file_game.open(address, ios::in | ios::binary);
-						file_game.read(reinterpret_cast<char*>(&game), sizeof(game)); // Đọc tập tin nhị phân chứa dữ liệu người chơi
+						file_game.read(reinterpret_cast<char*>(&game), sizeof(game));
 						file_game.close();
 
-						// Hien du lieu file hien tai
+						// HIỂN THỊ DỮ LIỆU FILE HIỆN TẠI
 						textcolor(9);
 						gotoXY(18, 14); cout << "<| ";
 						textcolor(9);
@@ -1723,10 +1658,10 @@ void high_score(int state = 0, int choose = 0)
 		}
 		else
 		{
-			// Bat dau doc file nguoi choi -> Trich xuat diem
-			string File[25];              // Mang file nguoi choi
-			int numFile = 0;              // So file nguoi choi co trong user.txt
-			string file_name;             // Ten file
+			// ĐỌC user.txt ĐỂ RÚT RA TÊN FILE
+			string File[25];              // Mảng tên file đã tồn tại
+			int numFile = 0;              // Số lượng file tồn tại
+			string file_name;             // Tên file
 			fstream file_game("data/user.txt", ios::in);
 			while (!file_game.eof())
 			{
@@ -1734,33 +1669,50 @@ void high_score(int state = 0, int choose = 0)
 				File[numFile++] = file_name;
 			};
 			file_game.close();
-			// Ket thuc doc file
+			// KẾT THÚC DUYỆT
 
-			// Bat dau trich xuat diem trong file
+			// TRÍCH XUẤT DỮ LIỆU TRONG TẤT CẢ FILE
 			Info game;
 			int Score[25];
+			MODE mode[25];
 			int numScore = 0;
+			int numMode = 0;
 			for (register int i = 0; i < numFile; ++i)
 			{
 				file_game.open("data/" + File[i], ios::in);
 				file_game.read(reinterpret_cast<char*>(&game), sizeof(game));
 				Score[numScore++] = game.score;
+				mode[numMode++] = game.mode;
 				file_game.close();
 			};
-
+			// HOÀN THÀNH TRÍCH XUẤT
 			delete_menu();
-
+			// BẮT ĐẦU HIỂN THỊ
 			gotoXY(35, 4);
 			textcolor(14);
-			cout << "SCORE";
-			for (register int i = 0; i < numScore; ++i)
+			cout << "SCORE BOARD";
+			for (register int i = 0; i < numFile - 1; ++i)
 			{
 				gotoXY(25, 6 + 2 * i);
-				textcolor(14);
-				cout << File[i];
-				gotoXY(50, 6 + 2 * i);
 				textcolor(12);
+				cout << File[i];
+				gotoXY(44, 6 + 2 * i);
+				textcolor(14);
 				cout << Score[i];
+				gotoXY(55, 6 + 2 * i);
+				textcolor(10);
+				if (mode[i] == CLASSICAL)
+				{
+					cout << "CLASSICAL";
+				}
+				else if (mode[i] == CHALLENGE)
+				{
+					cout << "CHALLENGE";
+				}
+				else
+				{
+					cout << "ADVANCED";
+				};
 			};
 			_getch();
 			delete_menu();
@@ -1774,7 +1726,7 @@ void high_score(int state = 0, int choose = 0)
 // ---------------------------------------------------
 
 
-// ----------------- ABOUT ---------------------------
+// -------------------- ABOUT ------------------------
 void about_game(int state = 0, int choose = 0)
 {
 	if (state != 0)
@@ -1826,7 +1778,7 @@ void about_game(int state = 0, int choose = 0)
 };
 // ---------------------------------------------------------
 
-// ------------- HUONG DAN CHOI GAME -----------------------
+// ------------- HƯỚNG DẪN CHƠI GAME -----------------------
 void tutorial(int state = 0, int choose = 0) 
 {
 	if (state != 0)
@@ -1851,13 +1803,6 @@ void tutorial(int state = 0, int choose = 0)
 			delete_menu();
 
 			textcolor(10);
-			/*gotoXY(33, 10); cout << "  <> CONTROL:  ";
-			gotoXY(33, 12); cout << "         W     ";
-			gotoXY(33, 13); cout << "    A        D ";
-			gotoXY(33, 14); cout << "         S     ";
-			gotoXY(33, 15); cout << "               ";
-			gotoXY(33, 16); cout << "  ESC: Save game ";
-			gotoXY(33, 17); cout << "  P: Pause game ";*/
 			gotoXY(38, 7); cout << "CAC CHE DO CHOI";
 			gotoXY(10, 9); cout << "CLASSCICAL:  Che do co dien";
 			gotoXY(22, 10); cout << "- Ran co the di xuyen tuong, xuat hien o tuong ben doi dien";
@@ -1866,7 +1811,8 @@ void tutorial(int state = 0, int choose = 0)
 			gotoXY(22, 14); cout << "- Ban phai vuot qa 5 level, tang toc do chay sau moi level";
 			gotoXY(22, 15); cout << "- Chu y: cham tuong -> die";
 			gotoXY(10, 17); cout << "AVANDCED: Che do nang cao";
-			gotoXY(22, 18); cout << "- Coming soon!";
+			gotoXY(10, 18); cout << "- Con ran may se thi dau cung ban !";
+			gotoXY(22, 19); cout << "- Co gang an that nhieu trai cay truoc may tinh";
 
 			_getch();
 			delete_menu();
@@ -1883,30 +1829,13 @@ string list_menu[] = { " NEW GAME  ", " CONTINUE  ","HIGH SCORE","   ABOUT     "
 void hieu_ung_chu_SNAKE(int y) 
 {
 	setTextColor(10);
-	/*int i = x_rec + 1;
-
-	for (; i <= x_rec + 16; i++) 
-	{
-		//int n = 53;
-		gotoXY(i, y);
-		cout << "ssssssss  nnn    nn      aaa        kk  kk   eeeeeee"; gotoXY(32 + x_rec - i, y + 1);
-		cout << "ss        nnnn   nn     aa aa       kk kk   ee      "; gotoXY(i, y + 2);
-		cout << "ssssssss  nn nn  nn    aa   aa      kkkk    eeeeee  "; gotoXY(32 + x_rec - i, y + 3);
-		cout << "      ss  nn  nn nn   aaaaaaaaa     kk kk   eeeeee  "; gotoXY(i, y + 4);
-		cout << "ss    ss  nn   nnnn  aaa     aaa    kk  kk  ee      "; gotoXY(32 + x_rec - i, y + 5);
-		cout << "ssssssss  nn    nnn aaa       aaa   kk   kk  eeeeeee"; //gotoXY(i, y + 5);
-		Sleep(20);
-		if (i == 17) return;
-		delete_menu(y - 1, y + 6);
-	};*/
-
-	char a = 219; // █
+	char a = 219;// █
 	char b = 187;// ╗
-	char c = 201; // ╔
+	char c = 201;// ╔
 	char d = 205;//═
 	char e = 188;//╝
 	char f = 186;//║
-	char g = 200; //╚
+	char g = 200;//╚
 
 	int line = 5;
 	int x = 23;
@@ -1932,7 +1861,7 @@ void hieu_ung_chu_SNAKE(int y)
 	textcolor(7);
 };
 
-//  ------------------------- HIEU UNG XUAT HIEN MENU ----------------------------------------
+//  ------------------------- HIỆU ỨNG XUẤT HIỆN MENU ----------------------------------------
 void hieu_ung_menu()
 {
 	textcolor(11);
@@ -1971,22 +1900,22 @@ void print_menu(int choice)
 			k[option] = 12;
 		};
 
-		// Doi mau option
+		// ĐỔI MÀU
 		setTextColor(k[option]);
-		// Di chuyen con tro den vi tri option
+		// DI CHUYỂN ĐẾN VỊ TRÍ ĐƯỢC CHỌN
 		gotoXY(x_rec + 35 + 1, y_rec + f + 3*option);
 		cout << list_menu[option];
 	};
 };
 
-// ------------------------- TOAN BO MENU ----------------------------------------
+// ------------------------- VẬN ĐỘNG MENU ----------------------------------------
 void menu()
 {
 	int i = 0;
 
 	noCursorType();
 	hieu_ung_chu_SNAKE(y_rec + 7);
-	hieu_ung_menu(); // Hieu ung xuat hien menu
+	hieu_ung_menu(); // Hiệu ứng xuất hiện menu
 
 	while (true)
 	{
