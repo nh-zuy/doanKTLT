@@ -1,3 +1,0 @@
-duy.dat
-tram.dat
-dinh.dat

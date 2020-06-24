@@ -674,7 +674,6 @@ void play_game(bool mssv = 0, int n = D)
 					};
 					case 27: 
 					{
-						save_game();
 						return;
 					};
 					};
@@ -1520,7 +1519,7 @@ void continue_game(int state = 0, int choose = 0)
 
 							if (pointer < 0)
 							{
-								pointer = numFile - 1;
+								pointer = numFile - 2;
 							};
 							break;
 						}
@@ -1633,6 +1632,7 @@ void continue_game(int state = 0, int choose = 0)
 				{
 					save_game();
 				};
+
 				cin.ignore();
 			};
 		};
