@@ -149,11 +149,12 @@ void pause_game()
 };
 // ----------------------------------------------------------
 
-// ------------------- HAM BAT SU KIEN ----------------------
+// ------------------- HÀM BẮT SỰ KIỆN ----------------------
 void take_event(int &n)
 {
-	int key = inputKey();
-
+	int key = inputKey(); // inputKey() là một hàm lấy sự kiện từ bàn phím
+	
+	// PHÂN TÍCH SỰ KIỆN
 	if (key == A || key == S || key == D || key == W || key == 27 || key == P)
 	{
 		if (key == A && n == D) return;
@@ -327,79 +328,79 @@ void play_classical(int mssv = 0, int n = D)
 		cout << char(16) << " SIZE: " << Size;
 		textcolor(11);
 		// ----------------------------------------
-		// Lay toa do duoi
+		// LẤY TỌA ĐỘ ĐUÔI CON RẮN
 		tail = SNAKE[Size - 1];
 
-		// Doc su kien ban phim
+		// LẤY SỰ KIỆN BÀN PHÍM
 		take_event(n);
 
 		switch (n)
 		{
-		case A: // Sang trai
+		case A: // SANG TRÁI
 		{
 			Dir = n;
 			update_snake();
 			--SNAKE[0].x;
-			// Cham bien trai thi di ra bien phai
+			// CHẠM BIÊN TRÁI THÌ RA BIÊN PHẢI
 			if (SNAKE[0].x == 2)
 			{
 				SNAKE[0].x = 84;
 			};
 			break;
 		};
-		case S: // Di xuong
+		case S: // ĐI XUỐNG
 		{
 			Dir = n;
 			update_snake();
 			++SNAKE[0].y;
-			// Cham bien duoi thi ra bien tren
+			// CHẠM BIÊN DƯỚI THÌ RA BIÊN TRÊN
 			if (SNAKE[0].y == 29)
 			{
 				SNAKE[0].y = 2;
 			};
 			break;
 		};
-		case D: // Sang phai
+		case D: // SANG PHẢI
 		{
 			Dir = n;
 			update_snake();
 			++SNAKE[0].x;
-			// Neu cham bien phai thi ra bien trai
+			// NẾU CHẠM BÊN PHẢI THÌ ĐI RA BÊN TRÁI
 			if (SNAKE[0].x == 85)
 			{
 				SNAKE[0].x = 3;
 			};
 			break;
 		};
-		case W: // Di len
+		case W: // ĐI LÊN
 		{
 			Dir = n;
 			update_snake();
 			--SNAKE[0].y;
-			// Neu cham bien tren thi ra bien duoi
+			// NẾU CHẠM BIÊN TRÊN THÌ RA BIÊN DƯỚI
 			if (SNAKE[0].y == 1)
 			{
 				SNAKE[0].y = 28;
 			};
 			break;
 		};
-		case P:
+		case P: // DỪNG GAME
 			State = PAUSE;
 			return;
 		case 27:
-			return;				//return ve ham new_game
+			return;
 		};
 
-		// Dieu chinh toc do con ran
+		// TỐC ĐỘ CON RẮN
 		Sleep(Speed);
 
-		// Xoa duoi con ran
-		delete_point(tail.x, tail.y);
+		// ---- THAO TÁC IN ----------
+		delete_point(tail.x, tail.y); // XÓA ĐUÔI
+		print_snake(Size);            // IN ĐẦU
+		// ---------------------------
 
-		// In lai vi tri con ran moi
-		print_snake(Size);
-
-		// Kiem tra va cham voi than SNAKE
+		// ------------ KIỂM TRA VA CHẠM ------------
+			/* VA CHẠM BẢN THÂN CON RẮN */
 		for (register int i = 3; i < Size; ++i)
 		{
 			if (SNAKE[0] == SNAKE[i])
@@ -411,17 +412,17 @@ void play_classical(int mssv = 0, int n = D)
 				return;
 			};
 		};
-
-		// Neu SNAKE an trung FRUIT
+	
+			/* ĂN TRÚNG TRÁI CÂY */
 		if (SNAKE[0] == FRUIT)
 		{
 			++Score;
 			++counter;
-
-			if (Score % 4 == 0 && Level < MAX_LEVEL) // Toi da 5 level
+			// ĂN ĐỦ TRÁI CÂY -> TĂNG CẤP ĐỘ, TĂNG TỐC
+			if (Score % 4 == 0 && Level < MAX_LEVEL)
 			{
-				++Level; // Tang level
-				Speed -= 35; // Tang toc
+				++Level;     // TĂNG CẤP ĐỘ
+				Speed -= 35; // TĂNG TỐC
 			};
 
 			update_snake(Size);
@@ -429,54 +430,56 @@ void play_classical(int mssv = 0, int n = D)
 			InitialGrey();
 		};
 
-		// Neu an du 5 trai cay nho thi hien 1 trai cay TO
+		// NẾU ĐẾM ĂN ĐỦ 5 TRÁI CÂY
+		// HIỆN TRÁI CÂY TO
 		if (counter == 5)
 		{
-			// Random vi tri trai cay to
+			// RANDOM VỊ TRÍ
 			InitialBigGrey();
 			available = true;
-			counter = 0; // Xoay lai bo dem ve 0
+			counter = 0; // XOAY BỘ ĐẾM VỀ 0
 		};
 
-		// Neu trai cay to san sang
+		// NẾU CÓ SẴN TRÁI CÂY TO
 		if (available)
 		{
-			// Dem thoi gian
+			// ĐẾM THỜI GIAN
 			showTime(timer);
 			--timer;
 
-			// Neu het thoi gian
+			// NẾU HẾT THỜI GIAN
 			if (timer == 0)
 			{
-				// Xoa thoi gian, xoa trai cay
+				// XÓA THỜI GIAN
 				hideTime(timer);
 				
-				// Xoa trai cay to
+				// XÓA TRÁI CÂY
 				gotoXY(BFRUIT.x, BFRUIT.y);
 				cout << " ";
 
-				// Khoi tai lai bo dem
+				// XOAY LẠI THỜI GIAN, CỜ
 				available = false;
 				timer = 30;
 
-				// In ra trai cay nho khac
+				// IN TRÁI CÂY BÌNH THƯỜNG 
 				InitialGrey();
 			};
 		};
 
-		// Xu li khi con ran an dc trai cay to
+			/* KIỂM TRA VA CHẠM TRÁI CÂY ĐẶC BIỆT */
 		if (SNAKE[0] == BFRUIT && available == true)
 		{
-			Score += 8; // An duoc trai cay to thi dc tang 8 diem
+			Score += 8; // x2 ĐIỂM KHI ĂN TRÁI CÂY ĐẶC BIỆT
 
-			hideTime(timer); // Xoa thoi gian
+			hideTime(timer); // XÓA THỜI GIAN
 
-			// Khoi tao lai tu dau
-			available = false; // Set up lai dieu kien trai cay to
-			timer = 30;  // Set up lai thoi gian
-			counter = 0; // Set up lai bo dem
+			// XOAY BỘ ĐẾM VỀ BAN ĐẦU
+			available = false; // Set up lại cờ
+			timer = 30;  // Set up lại thời gian
+			counter = 0; // Set up lại bộ đếm
 		};
-	};
+		// -------------------------------------------------------
+	}; // KẾT THÚC VÒNG LẶP
 };
 // ---------------------------------------------------------------------
 
@@ -522,6 +525,9 @@ void play_game(bool mssv = 0, int n = D)
 	{
 		flag = false;
 
+		// KIỂM TRA ĐIỂM
+		// ĐỦ ĐIỀU KIỆN -> LÊN MÀN
+		// NẾU CHƯA -> IN TRÁI CÂY MỚI
 		if (Score % 5 != 0 || Score == 0)
 		{
 			InitialGrey(); // Tạo trái cây
@@ -543,6 +549,7 @@ void play_game(bool mssv = 0, int n = D)
 		textcolor(11);
 		// -----------------------------------------------
 
+		// VÒN LẶP ĐIỀU KHIỂN -> DI CHUYỂN
 		while (true)
 		{
 			// Lấy tọa độ đuôi ban đầu
@@ -554,8 +561,8 @@ void play_game(bool mssv = 0, int n = D)
 			switch (n)
 			{
 			case A: // SANG TRÁI
-				Dir = n;
-				update_snake();
+				Dir = n; // LẤY HƯỚNG ĐI HIỆN TẠI
+				update_snake();// CẬP NHẬT VỊ TRÍ CON RẮN
 				SNAKE[0].x--;
 				break;
 			case S: // ĐI XUỐNG 
@@ -582,14 +589,13 @@ void play_game(bool mssv = 0, int n = D)
 				return;
 			};
 
-			// Điều chỉnh tốc độ con rắn
-			Sleep(Speed);
+			// --- CON RẮN DI CHUYỂN ---------
+			Sleep(Speed);                 // Tạo hiệu ứng chuyển động
 
-			// XÓA ĐUÔi
-			delete_point(tail.x, tail.y);
+			delete_point(tail.x, tail.y); // Xóa đuôi con rắn
 
-			// IN ĐẦU
-			print_mssv(Size);
+			print_mssv(Size);             // In đầu con rắn
+			// --------------------------------
 
 			// KIỂM TRA VA CHẠM SAU DI CHUYỂN
 			if (check_collision())
@@ -601,11 +607,12 @@ void play_game(bool mssv = 0, int n = D)
 				return;		//return ve ham new_game
 			};
 
+			// KIỂM TRA ĂN ĐƯỢC THỨC ĂN
 			if (SNAKE[0] == FRUIT && flag == false)
 			{
-				++Score;
-				update_snake(Size);
-				break;
+				++Score;           // Tăng điểm
+				update_snake(Size);// Tăng độ dài
+				break;             // Thoát vòng lặp di chuyển
 			};
 
 			// NẾU ĐỤNG TRÚNG CỔNG THÌ CHẾT 
@@ -618,15 +625,15 @@ void play_game(bool mssv = 0, int n = D)
 				return;
 			};
 
-			// Neu vao cong dung theo huong mac dinh thi len level
+			// NẾU VÀO ĐÚNG ĐIỂM GIỮA CỔNG
 			if (flag && SNAKE[0].x == CAVE[Level - 1].x && SNAKE[0].y == CAVE[Level - 1].y)
 			{
 				// VÀO CỔNG THEO HƯỚNG NGƯỢC LẠI MẶC ĐỊNH 
 				if (n == W)
 				{
-					State = EXIT;
-					dead_snake(true);
-					return;
+					State = EXIT;     // Trạng thái thua
+					dead_snake(true); // Hiệu ứng con rắn chết
+					return;           // THoát hàm
 				};
 				// Tang diem
 				++Score;
@@ -724,7 +731,7 @@ void play_game(bool mssv = 0, int n = D)
 					return;
 				};
 			};
-		};
+		};// VÒNG LẶP ĐIỀU KHIỂN -> DI CHUYỂN
 	};
 };
 // -----------------------------------------------------------
@@ -747,6 +754,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = W;
 	};
+
 	if (CDir == A && dx < 0 && dy > 0)
 	{
 		dir = A;
@@ -755,6 +763,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = S;
 	};
+
 	// ĐANG HƯỚNG SANG PHẢI
 	if (CDir == D && dx > 0 && dy < 0)
 	{
@@ -764,6 +773,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = W;
 	};
+
 	if (CDir == D && dx > 0 && dy > 0)
 	{
 		dir = D;
@@ -772,6 +782,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = S;
 	};
+
 	// ĐANG HƯỚNG LÊN TRÊN
 	if (CDir == W && dx < 0 && dy < 0)
 	{
@@ -781,6 +792,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = A;
 	};
+
 	if (CDir == W && dx > 0 && dy < 0)
 	{
 		dir = W;
@@ -789,6 +801,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = D;
 	};
+
 	// ĐANG HƯỚNG XUỐNG DƯỚI
 	if (CDir == S && dx < 0 && dy > 0)
 	{
@@ -798,6 +811,7 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = A;
 	};
+
 	if (CDir == S && dx > 0 && dy > 0)
 	{
 		dir = S;
@@ -813,87 +827,59 @@ int decideNext(point CSNAKE, int CDir, point fruit)
 	{
 		dir = W;
 	}
-	/*else if (CDir == W && dx > 0 && dy == 0)
-	{
-		dir = D;
-	};*/
 	else if (CDir == A && dx > 0 && dy > 0)
 	{
 		dir = S;
 	};
-	/*else if (CDir == S && dx > 0 && dy == 0)
-	{
-		dir = D;
-	};*/
+	
 	// ĐANG HƯỚNG SANG PHẢI NÊN QUAY ĐẦU
 	if (CDir == D && dx < 0 && dy < 0)
 	{
 		dir = W;
 	}
-	/*else if (CDir == W && dx < 0 && dy == 0)
-	{
-		dir = A;
-	};*/
 	else if (CDir == D && dx < 0 && dy > 0)
 	{
 		dir = S;
 	};
-	/*else if (CDir == S && dx < 0 && dy == 0)
-	{
-		dir = A;
-	};*/
+	
 	// ĐANG HƯỚNG LÊN TRÊN NÊN QUAY ĐẦU
 	if (CDir == W && dx < 0 && dy > 0)
 	{
 		dir = A;
 	}
-	/*else if (CDir == A && dx == 0 && dy > 0)
-	{
-		dir = S;
-	};*/
 	else if (CDir == W && dx > 0 && dy > 0)
 	{
 		dir = D;
 	};
-	/*else if (CDir == D && dx == 0 && dy > 0)
-	{
-		dir = S;
-	};*/
+	
 	// ĐANG HƯỚNG XUỐNG DƯỚI NÊN QUAY ĐẦU
 	if (CDir == S && dx < 0 && dy < 0)
 	{
 		dir = A;
 	}
-	/*else if (CDir == A && dx == 0 && dy < 0)
-	{
-		dir = W;
-	};*/
 	else if (CDir == S && dx > 0 && dy < 0)
 	{
 		dir = D;
 	};
-	/*else if (CDir == D && dx == 0 && dy < 0)
-	{
-		dir = W;
-	};*/
+	
 	// TRẢ VỀ KẾT QUẢ PHÂN TÍCH
 	return dir;
 };
 
 void play_advanced(bool mssv = 0, int n = D)
 {
-	// ------------- CON RAN MAY ---------------
+	// ------------- CON RẮN MÁY ---------------
 	point* CSNAKE = new point[MAX_SIZE];
 	int CSize = LenInit;
 	int CScore = 0;
 	int CDir = D;
 	int CLevel = 1;
-			  /* Set up con rắn máy */
+			  /* Khởi tạo con rắn máy */
 	for (register int i = MAX_SIZE - 1; i >= 0; --i)
 	{
 		CSNAKE[i] = { 0,0 };
 	};
-	          /* Set up vị trí ban đầu */
+	          /* Khởi tạo vị trí ban đầu */
 	for (register int i = 0; i < CSize; ++i)
 	{
 		CSNAKE[i].x = 30 - i;

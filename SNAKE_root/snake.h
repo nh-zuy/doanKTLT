@@ -205,34 +205,35 @@ void InitialBigGrey()
 // ----------------------------------------------------
 
 // ---- HÀM TẠO CỔNG CHUYỂN CẤP (CHALLENGE) ----
-void InitialCave(bool UP = false, bool DOWN = false) {// khởi tạo cái cổng cho con rắn
+void InitialCave(bool UP = false, bool DOWN = false) {
 	int n = 154;
-
 	textcolor(14);
 	gotoXY(CAVE[Level - 1].x, CAVE[Level - 1].y);
 	cout << (char)n;
-
-	if (UP != false && DOWN == false) {
+	// VẼ CỔNG RA
+	if (UP == true && DOWN == false) {
 		gotoXY(CAVE[Level - 1].x - 1, CAVE[Level - 1].y);
 		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x + 1, CAVE[Level - 1].y);
 		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x - 1, CAVE[Level - 1].y - 1);
-		cout << (char)154;
+		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x + 1, CAVE[Level - 1].y - 1);
-		cout << (char)154;
+		cout << (char)n;
 	}
-	if (UP == false && DOWN != false) {
+	// VẼ CỔNG VÀO
+	else if (UP == false && DOWN == true) {
 		gotoXY(CAVE[Level - 1].x - 1, CAVE[Level - 1].y);
 		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x + 1, CAVE[Level - 1].y);
 		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x - 1, CAVE[Level - 1].y + 1);
-		cout << (char)154;
+		cout << (char)n;
 		gotoXY(CAVE[Level - 1].x + 1, CAVE[Level - 1].y + 1);
-		cout << (char)154;
+		cout << (char)n;
 	}
-	if (UP == false && DOWN == false) {
+	// XÓA CỔNG CHUYỂN CẤP
+	else if (UP == false && DOWN == false) {
 		gotoXY(CAVE[Level - 1].x, CAVE[Level - 1].y);
 		cout << " ";
 		gotoXY(CAVE[Level - 1].x - 1, CAVE[Level - 1].y);

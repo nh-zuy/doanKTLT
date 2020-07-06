@@ -31,7 +31,7 @@
 #define KEY_RIGHT	1077
 #define KEY_NONE	-1
 
-// Ham bat su kien qua ban phim
+// HAM BAT SU KIEN BAN PHIM
 int inputKey()
 {
 	if (_kbhit())
@@ -49,7 +49,6 @@ int inputKey()
 
 	return KEY_NONE;
 }
-
 
 // delete screen
 void clrscr() {
